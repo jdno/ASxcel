@@ -79,17 +79,13 @@ public class Footer extends JPanel {
 		airport.setFocusable(false);
 		createPanel.add(airport);
 		
-		JButton country = new JButton("Country");
-		country.addActionListener(view.getController());
-		country.setActionCommand("create_new_country");
-		country.setFocusable(false);
-		createPanel.add(country);
-		
 		JButton route = new JButton("Route");
 		route.addActionListener(view.getController());
 		route.setActionCommand("create_new_route");
 		route.setFocusable(false);
 		createPanel.add(route);
+		
+		createPanel.add(new JPanel());
 		
 		return createPanel;
 	}
