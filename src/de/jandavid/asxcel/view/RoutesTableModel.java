@@ -141,10 +141,10 @@ public class RoutesTableModel extends AbstractTableModel {
 				r.getOrigin().setIataCode(String.valueOf(aValue));
 				break;
 			case 2: // origin PAX
-				r.getOrigin().setPassengers((int) aValue);
+				r.getOrigin().setPassengers(Integer.valueOf((String) aValue));
 				break;
 			case 3: // origin cargo
-				r.getOrigin().setCargo((int) aValue);
+				r.getOrigin().setCargo(Integer.valueOf((String) aValue));
 				break;
 			case 4: // destination airport
 				break;
@@ -152,19 +152,19 @@ public class RoutesTableModel extends AbstractTableModel {
 				r.getDestination().setIataCode(String.valueOf(aValue));
 				break;
 			case 6: // destination PAX
-				r.getDestination().setPassengers((int) aValue);
+				r.getDestination().setPassengers(Integer.valueOf((String) aValue));
 				break;
 			case 7: // destination cargo
-				r.getDestination().setCargo((int) aValue);
+				r.getDestination().setCargo(Integer.valueOf((String) aValue));
 				break;
 			case 8: // distance
-				r.setDistance((int) aValue);
+				r.setDistance(Integer.valueOf((String) aValue));
 				break;
 			case 9: // load to
-				r.setLoadTo((int) aValue);
+				r.setLoadTo(Integer.valueOf((String) aValue));
 				break;
 			case 10: // load from
-				r.setLoadFrom((int) aValue);
+				r.setLoadFrom(Integer.valueOf((String) aValue));
 				break;
 			default:
 				break;

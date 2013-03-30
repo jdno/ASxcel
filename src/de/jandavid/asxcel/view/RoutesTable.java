@@ -18,6 +18,7 @@ package de.jandavid.asxcel.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -56,6 +57,7 @@ public class RoutesTable extends JTable {
 		setColumnSizes();
 		setShowVerticalLines(true);
 		setGridColor(new Color(64,64,64));
+		setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
 		setFocusable(false);
 	}
 	

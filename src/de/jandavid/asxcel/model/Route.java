@@ -137,9 +137,8 @@ public class Route implements Comparable<Route> {
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
 	private void updateField(String field, Object value) throws SQLException {
-		String query = "UPDATE `routes` SET ? = ? WHERE `id` = '" + id + "' LIMIT 1";
-		ArrayList<Object> params = new ArrayList<Object>(2);
-		params.add(field);
+		String query = "UPDATE `routes` SET '" + field + "' = ? WHERE `id` = '" + id + "'";
+		ArrayList<Object> params = new ArrayList<Object>(1);
 		params.add(value);
 		
 		model.getDatabase().executeUpdate(query, params);
