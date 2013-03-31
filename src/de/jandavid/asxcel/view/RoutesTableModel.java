@@ -172,6 +172,8 @@ public class RoutesTableModel extends AbstractTableModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		fireTableDataChanged();
 	}
 
 }
