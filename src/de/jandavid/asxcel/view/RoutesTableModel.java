@@ -133,6 +133,8 @@ public class RoutesTableModel extends AbstractTableModel {
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Route r = model.getEnterprise().getRoutes().get(rowIndex);
 		
+		if(((String) aValue).equals("")) aValue = "0";
+		
 		try {
 			switch(columnIndex) {
 			case 0: // origin airport
@@ -172,8 +174,6 @@ public class RoutesTableModel extends AbstractTableModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		fireTableDataChanged();
 	}
 
 }
