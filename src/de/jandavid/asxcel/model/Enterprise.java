@@ -31,14 +31,14 @@ import java.util.Collections;
 public class Enterprise {
 	
 	/**
-	 * Where the enterprise's main office is located.
-	 */
-	private Country country;
-	
-	/**
 	 * This is the enterprise's ID in the database.
 	 */
 	private int id;
+	
+	/**
+	 * Where the enterprise's main office is located.
+	 */
+	private Airport mainHub;
 	
 	/**
 	 * The model is needed to access the database.
@@ -144,8 +144,8 @@ public class Enterprise {
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
 	private void syncWithDb() throws SQLException, Exception {
-		String query = "SELECT `e`.`id`, `e`.`name`, `c`.`name` FROM `enterprises` AS `e` " +
-				"INNER JOIN `countries` AS `c` ON `e`.`country` = `c`.`id` " +
+		String query = "SELECT `e`.`id`, `e`.`name`, `a`.`name` FROM `enterprises` AS `e` " +
+				"INNER JOIN `airports` AS `a` ON `e`.`airport` = `a`.`id` " +
 				"WHERE `e`.`name` = ? LIMIT 1";
 		ArrayList<Object> params = new ArrayList<Object>(1);
 		params.add(name);
@@ -155,7 +155,7 @@ public class Enterprise {
 		if(dr.next()) {
 			id = dr.getInt(0);
 			name = dr.getString(1);
-			country = new Country(model, dr.getString(2));
+			mainHub = new Airport(model, dr.getString(2));
 			
 			loadRoutes();
 		} else {
@@ -164,17 +164,17 @@ public class Enterprise {
 	}
 
 	/**
-	 * @return the country
-	 */
-	public Country getCountry() {
-		return country;
-	}
-
-	/**
 	 * @return the id
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * @return the mainHub
+	 */
+	public Airport getMainHub() {
+		return mainHub;
 	}
 
 	/**

@@ -105,30 +105,17 @@ public class View {
 	 */
 	public String createEnterprise() throws SQLException {
 		String name = "";
-		String country = "";
+		String airport = "";
 		
 		while(name == null || name.equals("")) {
 			name = JOptionPane.showInputDialog(window, "Name your enterprise:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
 		}
 		
-		Object[] countries = new Object[model.getCountries().size()];
-		
-		for(int i = 0; i < model.getCountries().size(); i++) {
-			countries[i] = model.getCountries().get(i).getName();
+		while(airport == null || airport.equals("")) {
+			airport = JOptionPane.showInputDialog(window, "Name your main hub:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
 		}
 		
-		while(country == null || country.equals("")) {
-			country = (String)JOptionPane.showInputDialog(
-					window,
-					"Select your country:",
-					"Create new enterprise",
-					JOptionPane.PLAIN_MESSAGE,
-					null,
-					countries,
-					countries[0]);
-		}
-		
-		model.createEnterprise(name, country);
+		model.createEnterprise(name, airport);
 		
 		return name;
 	}
@@ -150,7 +137,14 @@ public class View {
 		
 		Object[] airportsOrigin = new Object[model.getAirports().size()];
 		
+		int mainHubInt = 0;
+		Airport mainHub = model.getEnterprise().getMainHub();
+		
 		for(int i = 0; i < model.getAirports().size(); i++) {
+			Airport currentAirport = model.getAirports().get(i);
+			
+			if(mainHub.equals(currentAirport)) mainHubInt = i;
+			
 			airportsOrigin[i] = model.getAirports().get(i).getName();
 		}
 		
@@ -161,7 +155,7 @@ public class View {
 			JOptionPane.PLAIN_MESSAGE,
 			null,
 			airportsOrigin,
-			airportsOrigin[0]);
+			airportsOrigin[mainHubInt]);
 		if(origin == null || origin.equals("")) return;
 		
 		ArrayList<Airport> destinations = filterAirports(origin);
@@ -249,7 +243,7 @@ public class View {
 		
 		for(Airport a: model.getAirports()) {
 			if(a.compareTo(origin) != 0) {
-				if(!destinations.contains(a)) {
+				if(!destinations.contains(a) && a.compareTo(model.getEnterprise().getMainHub()) != 0) {
 					airports.add(a);
 				}
 			}
