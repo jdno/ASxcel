@@ -42,7 +42,11 @@ public class RoutesTableModel extends AbstractTableModel {
 	 * This array contains the column names.
 	 */
 	private String[] columnNames = {"Origin", "IATA", "PAX", "Cargo",
-			"Destination", "IATA", "PAX", "Cargo", "Distance", "Loads to", "Loads from"};
+			"Destination", "IATA", "PAX", "Cargo", "Distance", "Loads to", "Loads from", ""};
+	
+	private Class<?>[] columnClasses = {String.class, String.class, Integer.class, Integer.class,
+			String.class, String.class, Integer.class, Integer.class, Integer.class, Integer.class, 
+			Integer.class, Boolean.class};
 	
 	/**
 	 * This is needed to load and save the data.
@@ -57,17 +61,26 @@ public class RoutesTableModel extends AbstractTableModel {
 	public RoutesTableModel(Model model) {
 		this.model = model;
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
+	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
 	 */
 	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		if(columnIndex != 0 && columnIndex != 4) {
-			return true;
-		} else {
-			return false;
-		}
+	public Class<?> getColumnClass(int columnIndex) {
+		return columnClasses[columnIndex];
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.table.TableModel#getColumnCount()
+	 */
+	@Override
+	public int getColumnCount() {
+		return columnNames.length;
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return columnNames[column];
 	}
 
 	/* (non-Javadoc)
@@ -76,19 +89,6 @@ public class RoutesTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 		return model.getEnterprise().getRoutes().size();
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	@Override
-	public int getColumnCount() {
-		return 11;
-	}
-	
-	@Override
-	public String getColumnName(int column) {
-		return columnNames[column];
 	}
 
 	/* (non-Javadoc)
@@ -121,8 +121,22 @@ public class RoutesTableModel extends AbstractTableModel {
 			return r.getLoadTo();
 		case 10: // load from
 			return r.getLoadFrom();
+		case 11: // scheduled
+			return r.isScheduled();
 		default:
 			return "";
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
+	 */
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		if(columnIndex != 0 && columnIndex != 4) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -132,45 +146,48 @@ public class RoutesTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Route r = model.getEnterprise().getRoutes().get(rowIndex);
-		
-		if(((String) aValue).equals("")) aValue = "0";
-		
+
 		try {
 			switch(columnIndex) {
 			case 0: // origin airport
 				break;
 			case 1: // origin iata
-				r.getOrigin().setIataCode(String.valueOf(aValue));
+				r.getOrigin().setIataCode((String) aValue);
 				break;
 			case 2: // origin PAX
-				r.getOrigin().setPassengers(Integer.valueOf((String) aValue));
+				r.getOrigin().setPassengers((Integer) aValue);
 				break;
 			case 3: // origin cargo
-				r.getOrigin().setCargo(Integer.valueOf((String) aValue));
+				r.getOrigin().setCargo((Integer) aValue);
 				break;
 			case 4: // destination airport
 				break;
 			case 5: // destination iata
-				r.getDestination().setIataCode(String.valueOf(aValue));
+				r.getDestination().setIataCode((String) aValue);
 				break;
 			case 6: // destination PAX
-				r.getDestination().setPassengers(Integer.valueOf((String) aValue));
+				r.getDestination().setPassengers((Integer) aValue);
 				break;
 			case 7: // destination cargo
-				r.getDestination().setCargo(Integer.valueOf((String) aValue));
+				r.getDestination().setCargo((Integer) aValue);
 				break;
 			case 8: // distance
-				r.setDistance(Integer.valueOf((String) aValue));
+				r.setDistance((Integer) aValue);
 				break;
 			case 9: // load to
-				r.setLoadTo(Integer.valueOf((String) aValue));
+				r.setLoadTo((Integer) aValue);
 				break;
 			case 10: // load from
-				r.setLoadFrom(Integer.valueOf((String) aValue));
+				r.setLoadFrom((Integer) aValue);
+				break;
+			case 11: // scheduled
+				r.setScheduled(!r.isScheduled());
 				break;
 			default:
 				break;
 			}
+			
+			fireTableDataChanged();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

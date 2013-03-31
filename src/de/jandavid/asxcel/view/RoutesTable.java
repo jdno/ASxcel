@@ -18,7 +18,6 @@ package de.jandavid.asxcel.view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -28,7 +27,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  * The RouteTable contains all routes and displays them to the user
- * in a way that he is able to make strategic decisions based on
+ * in a way that enables him to make strategic decisions based on
  * the information provided.
  * 
  * @author jdno
@@ -48,7 +47,9 @@ public class RoutesTable extends JTable {
 	public RoutesTable(View view) {
 		this.setModel(new RoutesTableModel(view.getModel()));
 		this.setAutoCreateRowSorter(true);
-		
+		this.setDefaultRenderer(String.class, new RoutesCellRenderer(this, view.getModel()));
+		this.setDefaultRenderer(Integer.class, new RoutesCellRenderer(this, view.getModel()));
+
 		JTableHeader header = this.getTableHeader();
 		header.setDefaultRenderer(new HeaderRenderer(this));
 		header.setResizingAllowed(false);
@@ -56,11 +57,10 @@ public class RoutesTable extends JTable {
 		
 		setColumnSizes();
 		setShowVerticalLines(true);
-		setGridColor(new Color(64,64,64));
-		setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
-		setFocusable(false);
+		setGridColor(new Color(164,164,164));
+		setFocusable(true);
 	}
-	
+
 	/**
 	 * This auxiliary method sets the width of the columns to custom
 	 * values. This is done because many columns only hold one to
@@ -76,8 +76,9 @@ public class RoutesTable extends JTable {
 		getColumnModel().getColumn(6).setPreferredWidth(60);
 		getColumnModel().getColumn(7).setPreferredWidth(60);
 		getColumnModel().getColumn(8).setPreferredWidth(162);
-		getColumnModel().getColumn(9).setPreferredWidth(81);
-		getColumnModel().getColumn(10).setPreferredWidth(81);
+		getColumnModel().getColumn(9).setPreferredWidth(71);
+		getColumnModel().getColumn(10).setPreferredWidth(71);
+		getColumnModel().getColumn(11).setPreferredWidth(20);
 	}
 	
 	/**
@@ -92,17 +93,14 @@ public class RoutesTable extends JTable {
 	    DefaultTableCellRenderer renderer;
 
 	    public HeaderRenderer(JTable table) {
-	        renderer = (DefaultTableCellRenderer)
-	            table.getTableHeader().getDefaultRenderer();
+	        renderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
 	        renderer.setHorizontalAlignment(JLabel.CENTER);
 	    }
 
 	    @Override
 	    public Component getTableCellRendererComponent(
-	        JTable table, Object value, boolean isSelected,
-	        boolean hasFocus, int row, int col) {
-	        return renderer.getTableCellRendererComponent(
-	            table, value, isSelected, hasFocus, row, col);
+	        JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+	        return renderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 	    }
 	}
 	
