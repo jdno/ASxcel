@@ -98,6 +98,22 @@ public class Airport implements Comparable<Airport> {
 		return name.compareTo(o.getName());
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Airport) {
+			if(((Airport) obj).compareTo(this) == 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return super.equals(obj);
+		}
+	}
+
 	/**
 	 * This method loads an airport from the database, assuming the airport
 	 * has been created already. If this is the case this instance if Airport

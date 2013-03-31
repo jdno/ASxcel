@@ -93,6 +93,25 @@ public class Enterprise {
 	}
 	
 	/**
+	 * This method retrieves all destinations for a given airport.
+	 * @param origin The airport where the routes start.
+	 * @return A list of all airports to which routes go.
+	 */
+	public ArrayList<Airport> getDestinations(Airport origin) {
+		ArrayList<Airport> airports = new ArrayList<Airport>();
+		
+		for(Route r: routes) {
+			if(r.getOrigin().compareTo(origin) == 0) {
+				airports.add(r.getDestination());
+			}
+		}
+		
+		Collections.sort(airports);
+		
+		return airports;
+	}
+	
+	/**
 	 * This method loads all routes belonging to the current enterprise
 	 * from the database.
 	 * @throws SQLException If a SQL error occurs this gets thrown.

@@ -17,6 +17,7 @@
 package de.jandavid.asxcel.view;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -147,10 +148,10 @@ public class View {
 			return;
 		}
 		
-		Object[] airports = new Object[model.getAirports().size()];
+		Object[] airportsOrigin = new Object[model.getAirports().size()];
 		
 		for(int i = 0; i < model.getAirports().size(); i++) {
-			airports[i] = model.getAirports().get(i).getName();
+			airportsOrigin[i] = model.getAirports().get(i).getName();
 		}
 		
 		origin = (String)JOptionPane.showInputDialog(
@@ -159,9 +160,22 @@ public class View {
 			"Create new route",
 			JOptionPane.PLAIN_MESSAGE,
 			null,
-			airports,
-			airports[0]);
+			airportsOrigin,
+			airportsOrigin[0]);
 		if(origin == null || origin.equals("")) return;
+		
+		ArrayList<Airport> destinations = filterAirports(origin);
+		
+		if(destinations.size() < 1) {
+			JOptionPane.showMessageDialog(window, "You have to create a new airports first.", "Info", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		Object[] airportsDestination = new Object[destinations.size()];
+		
+		for(int i = 0; i < destinations.size(); i++) {
+			airportsDestination[i] = destinations.get(i).getName();
+		}
 		
 		destination = (String)JOptionPane.showInputDialog(
 			window,
@@ -169,8 +183,8 @@ public class View {
 			"Create new route",
 			JOptionPane.PLAIN_MESSAGE,
 			null,
-			airports,
-			airports[0]);
+			airportsDestination,
+			airportsDestination[0]);
 		if(destination == null || destination.equals("")) return;
 		
 		if(origin.equals(destination)) {
@@ -220,6 +234,28 @@ public class View {
 		}
 		
 		return name;
+	}
+	
+	/**
+	 * This auxiliary method filters the list of airports provided by the
+	 * model by removing all airports to which a route already exists.
+	 * @param originName The name of the airport to start from.
+	 * @return A list of all airports without a route to the origin.
+	 */
+	private ArrayList<Airport> filterAirports(String originName) {
+		ArrayList<Airport> airports = new ArrayList<Airport>();
+		Airport origin = model.getAirport(originName);
+		ArrayList<Airport> destinations = model.getEnterprise().getDestinations(origin);
+		
+		for(Airport a: model.getAirports()) {
+			if(a.compareTo(origin) != 0) {
+				if(!destinations.contains(a)) {
+					airports.add(a);
+				}
+			}
+		}
+		
+		return airports;
 	}
 	
 	/**
