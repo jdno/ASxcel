@@ -112,13 +112,13 @@ public class Model {
 	 * @param countryName The name of the enterprise's country.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public void createEnterprise(String name, String countryName) throws SQLException {
-		Country country = createCountry(countryName);
+	public void createEnterprise(String name, String airportName) throws SQLException {
+		Airport airport = createAirport(airportName);
 		
-		String query = "INSERT INTO `enterprises` (`name`, `country`) VALUES (?,?)";
+		String query = "INSERT INTO `enterprises` (`name`, `airport`) VALUES (?,?)";
 		ArrayList<Object> params = new ArrayList<Object>(2);
 		params.add(name);
-		params.add(country.getId());
+		params.add(airport.getId());
 		
 		database.executeUpdate(query, params);
 	}

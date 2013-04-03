@@ -16,17 +16,11 @@
  */
 package de.jandavid.asxcel.view;
 
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import de.jandavid.asxcel.model.Country;
 
 /**
  * This is the footer at the end of the Routes view, which contains
@@ -35,7 +29,7 @@ import de.jandavid.asxcel.model.Country;
  * 
  * @author jdno
  */
-public class Footer extends JPanel {
+public class RoutesFooter extends JPanel {
 
 	/**
 	 * For future use.
@@ -52,12 +46,11 @@ public class Footer extends JPanel {
 	 * options for filtering, one with options to create objects.
 	 * @param view The view with access to the model.
 	 */
-	public Footer(View view) {
+	public RoutesFooter(View view) {
 		this.view = view;
 		
 		this.setLayout(new GridLayout(2,1));
 		
-		add(generateFilter());
 		add(generateCreate());
 	}
 	
@@ -79,64 +72,15 @@ public class Footer extends JPanel {
 		airport.setFocusable(false);
 		createPanel.add(airport);
 		
-		JButton country = new JButton("Country");
-		country.addActionListener(view.getController());
-		country.setActionCommand("create_new_country");
-		country.setFocusable(false);
-		createPanel.add(country);
-		
 		JButton route = new JButton("Route");
 		route.addActionListener(view.getController());
 		route.setActionCommand("create_new_route");
 		route.setFocusable(false);
 		createPanel.add(route);
 		
+		createPanel.add(new JPanel());
+		
 		return createPanel;
 	}
-	
-	/**
-	 * This auxiliary method bundles the steps necessary to create the
-	 * panel with the filter options.
-	 * @return The panel with the filter options.
-	 */
-	private JPanel generateFilter() {
-		JPanel filterPanel = new JPanel();
-		filterPanel.setLayout(new GridLayout(1,0));
-		
-		JLabel desc = new JLabel("Filter by", JLabel.CENTER);
-		filterPanel.add(desc);
-		
-		ArrayList<Country> countries = view.getModel().getCountries();
-		String[] countryNames = new String[countries.size() + 1];
-		
-		countryNames[0] = "All countries";
-		for(int i = 0; i < countries.size(); i++) {
-			countryNames[i+1] = countries.get(i).getName();
-		}
-		
-		JComboBox<String> countryBox = new JComboBox<String>(countryNames);
-		filterPanel.add(countryBox);
-		
-		JPanel minDistPanel = new JPanel();
-		minDistPanel.setLayout(new BorderLayout());
-		JLabel minDistDesc = new JLabel("minimal distance");
-		minDistPanel.add(minDistDesc, BorderLayout.WEST);
-		JTextField minDistance = new JTextField();
-		minDistance.setText("0");
-		minDistance.setHorizontalAlignment(JTextField.RIGHT);
-		minDistPanel.add(minDistance, BorderLayout.CENTER);
-		filterPanel.add(minDistPanel);
-		
-		JPanel maxDistPanel = new JPanel();
-		maxDistPanel.setLayout(new BorderLayout());
-		JLabel maxDistDesc = new JLabel("maximal distance");
-		maxDistPanel.add(maxDistDesc, BorderLayout.WEST);
-		JTextField maxDistance = new JTextField();
-		maxDistance.setText("0");
-		maxDistance.setHorizontalAlignment(JTextField.RIGHT);
-		maxDistPanel.add(maxDistance, BorderLayout.CENTER);
-		filterPanel.add(maxDistPanel);
-		
-		return filterPanel;
-	}
+
 }

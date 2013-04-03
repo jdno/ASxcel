@@ -17,6 +17,7 @@
 package de.jandavid.asxcel.view;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -104,17 +105,17 @@ public class View {
 	 */
 	public String createEnterprise() throws SQLException {
 		String name = "";
-		String country = "";
+		String airport = "";
 		
 		while(name == null || name.equals("")) {
 			name = JOptionPane.showInputDialog(window, "Name your enterprise:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
 		}
 		
-		while(country == null || country.equals("")) {
-			country = JOptionPane.showInputDialog(window, "Enter country:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
+		while(airport == null || airport.equals("")) {
+			airport = JOptionPane.showInputDialog(window, "Name your main hub:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
 		}
 		
-		model.createEnterprise(name, country);
+		model.createEnterprise(name, airport);
 		
 		return name;
 	}
@@ -134,10 +135,17 @@ public class View {
 			return;
 		}
 		
-		Object[] airports = new Object[model.getAirports().size()];
+		Object[] airportsOrigin = new Object[model.getAirports().size()];
+		
+		int mainHubInt = 0;
+		Airport mainHub = model.getEnterprise().getMainHub();
 		
 		for(int i = 0; i < model.getAirports().size(); i++) {
-			airports[i] = model.getAirports().get(i).getName();
+			Airport currentAirport = model.getAirports().get(i);
+			
+			if(mainHub.equals(currentAirport)) mainHubInt = i;
+			
+			airportsOrigin[i] = model.getAirports().get(i).getName();
 		}
 		
 		origin = (String)JOptionPane.showInputDialog(
@@ -146,9 +154,22 @@ public class View {
 			"Create new route",
 			JOptionPane.PLAIN_MESSAGE,
 			null,
-			airports,
-			airports[0]);
+			airportsOrigin,
+			airportsOrigin[mainHubInt]);
 		if(origin == null || origin.equals("")) return;
+		
+		ArrayList<Airport> destinations = filterAirports(origin);
+		
+		if(destinations.size() < 1) {
+			JOptionPane.showMessageDialog(window, "You have to create a new airports first.", "Info", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		Object[] airportsDestination = new Object[destinations.size()];
+		
+		for(int i = 0; i < destinations.size(); i++) {
+			airportsDestination[i] = destinations.get(i).getName();
+		}
 		
 		destination = (String)JOptionPane.showInputDialog(
 			window,
@@ -156,8 +177,8 @@ public class View {
 			"Create new route",
 			JOptionPane.PLAIN_MESSAGE,
 			null,
-			airports,
-			airports[0]);
+			airportsDestination,
+			airportsDestination[0]);
 		if(destination == null || destination.equals("")) return;
 		
 		if(origin.equals(destination)) {
@@ -207,6 +228,28 @@ public class View {
 		}
 		
 		return name;
+	}
+	
+	/**
+	 * This auxiliary method filters the list of airports provided by the
+	 * model by removing all airports to which a route already exists.
+	 * @param originName The name of the airport to start from.
+	 * @return A list of all airports without a route to the origin.
+	 */
+	private ArrayList<Airport> filterAirports(String originName) {
+		ArrayList<Airport> airports = new ArrayList<Airport>();
+		Airport origin = model.getAirport(originName);
+		ArrayList<Airport> destinations = model.getEnterprise().getDestinations(origin);
+		
+		for(Airport a: model.getAirports()) {
+			if(a.compareTo(origin) != 0) {
+				if(!destinations.contains(a) && a.compareTo(model.getEnterprise().getMainHub()) != 0) {
+					airports.add(a);
+				}
+			}
+		}
+		
+		return airports;
 	}
 	
 	/**

@@ -35,7 +35,7 @@ public class Window extends JFrame {
 	 * For future use.
 	 */
 	private static final long serialVersionUID = -3116025408041446105L;
-
+	
 	/**
 	 * The view coordinates the GUI.
 	 */
@@ -53,7 +53,6 @@ public class Window extends JFrame {
 		
 		setTitle("ASxcel");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().add(new Footer(view), BorderLayout.SOUTH);
 		
 		initializeSize();
 		
@@ -68,7 +67,7 @@ public class Window extends JFrame {
 		JScrollPane pane = new JScrollPane(new RoutesTable(view));
 		pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		getContentPane().add(pane, BorderLayout.CENTER);
-		getContentPane().add(new Footer(view), BorderLayout.SOUTH);
+		getContentPane().add(new RoutesFooter(view), BorderLayout.SOUTH);
 		pack();
 		repaint();
 	}
@@ -89,5 +88,5 @@ public class Window extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation((screenSize.width - width) / 2, (screenSize.height - height) / 2);
 	}
-	
+
 }

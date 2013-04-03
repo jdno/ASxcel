@@ -31,14 +31,14 @@ import java.util.Collections;
 public class Enterprise {
 	
 	/**
-	 * Where the enterprise's main office is located.
-	 */
-	private Country country;
-	
-	/**
 	 * This is the enterprise's ID in the database.
 	 */
 	private int id;
+	
+	/**
+	 * Where the enterprise's main office is located.
+	 */
+	private Airport mainHub;
 	
 	/**
 	 * The model is needed to access the database.
@@ -93,6 +93,25 @@ public class Enterprise {
 	}
 	
 	/**
+	 * This method retrieves all destinations for a given airport.
+	 * @param origin The airport where the routes start.
+	 * @return A list of all airports to which routes go.
+	 */
+	public ArrayList<Airport> getDestinations(Airport origin) {
+		ArrayList<Airport> airports = new ArrayList<Airport>();
+		
+		for(Route r: routes) {
+			if(r.getOrigin().compareTo(origin) == 0) {
+				airports.add(r.getDestination());
+			}
+		}
+		
+		Collections.sort(airports);
+		
+		return airports;
+	}
+	
+	/**
 	 * This method loads all routes belonging to the current enterprise
 	 * from the database.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
@@ -125,8 +144,8 @@ public class Enterprise {
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
 	private void syncWithDb() throws SQLException, Exception {
-		String query = "SELECT `e`.`id`, `e`.`name`, `c`.`name` FROM `enterprises` AS `e` " +
-				"INNER JOIN `countries` AS `c` ON `e`.`country` = `c`.`id` " +
+		String query = "SELECT `e`.`id`, `e`.`name`, `a`.`name` FROM `enterprises` AS `e` " +
+				"INNER JOIN `airports` AS `a` ON `e`.`airport` = `a`.`id` " +
 				"WHERE `e`.`name` = ? LIMIT 1";
 		ArrayList<Object> params = new ArrayList<Object>(1);
 		params.add(name);
@@ -136,7 +155,7 @@ public class Enterprise {
 		if(dr.next()) {
 			id = dr.getInt(0);
 			name = dr.getString(1);
-			country = new Country(model, dr.getString(2));
+			mainHub = new Airport(model, dr.getString(2));
 			
 			loadRoutes();
 		} else {
@@ -145,17 +164,17 @@ public class Enterprise {
 	}
 
 	/**
-	 * @return the country
-	 */
-	public Country getCountry() {
-		return country;
-	}
-
-	/**
 	 * @return the id
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * @return the mainHub
+	 */
+	public Airport getMainHub() {
+		return mainHub;
 	}
 
 	/**
