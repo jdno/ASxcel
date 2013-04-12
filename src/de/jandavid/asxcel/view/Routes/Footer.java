@@ -54,6 +54,7 @@ public class Footer extends JPanel {
 		this.setLayout(new GridLayout(2,1));
 		
 		add(generateCreate());
+		add(generateDelete());
 	}
 	
 	/**
@@ -65,20 +66,57 @@ public class Footer extends JPanel {
 		JPanel createPanel = new JPanel();
 		createPanel.setLayout(new GridLayout(1,0));
 		
-		JLabel desc = new JLabel("Create new", JLabel.CENTER);
+		JLabel desc = new JLabel("Create", JLabel.CENTER);
 		createPanel.add(desc);
 		
 		JButton airport = new JButton("Airport");
 		airport.addActionListener(view.getController());
-		airport.setActionCommand("create_new_airport");
+		airport.setActionCommand("create_airport");
 		airport.setFocusable(false);
 		createPanel.add(airport);
 		
 		JButton route = new JButton("Route");
 		route.addActionListener(view.getController());
-		route.setActionCommand("create_new_route");
+		route.setActionCommand("create_route");
 		route.setFocusable(false);
 		createPanel.add(route);
+		
+		/* JButton filter = new JButton("Filter");
+		filter.addActionListener(view.getController());
+		filter.setActionCommand("create_filter");
+		filter.setFocusable(false);
+		createPanel.add(filter); */
+		
+		createPanel.add(new JPanel());
+		
+		return createPanel;
+	}
+	
+	/**
+	 * This auxiliary methods bundles the steps necessary to create the
+	 * panel with the options to delete stuff.
+	 * @return The panel with the delete options.
+	 */
+	private JPanel generateDelete() {
+		JPanel createPanel = new JPanel();
+		createPanel.setLayout(new GridLayout(1,0));
+		
+		JLabel desc = new JLabel("Delete", JLabel.CENTER);
+		createPanel.add(desc);
+		
+		JButton airport = new JButton("Airport");
+		airport.addActionListener(view.getController());
+		airport.setActionCommand("delete_airport");
+		airport.setFocusable(false);
+		createPanel.add(airport);
+		
+		createPanel.add(new JPanel());
+		
+		/* JButton filter = new JButton("Filter");
+		filter.addActionListener(view.getController());
+		filter.setActionCommand("delete_filter");
+		filter.setFocusable(false);
+		createPanel.add(filter); */
 		
 		createPanel.add(new JPanel());
 		

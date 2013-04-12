@@ -16,6 +16,7 @@
  */
 package de.jandavid.asxcel.model;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,6 +91,28 @@ public class Enterprise {
 		routes.add(r);
 		
 		return r;
+	}
+	
+	/**
+	 * This method removes all routes for a given airport. This is used whenever
+	 * an airports gets deleted.
+	 * @param airport The airport to be deleted.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteRoutes(Airport airport) throws SQLException {
+		String query = "DELETE FROM `routes` WHERE `id` =?";
+		
+		PreparedStatement ps = model.getDatabase().getConnection().prepareStatement(query);
+		
+		for(Route r: routes) {
+			if(r.getOrigin().equals(airport) || r.getDestination().equals(airport)) {
+				ps.setInt(1, r.getId());
+				ps.addBatch();
+			}
+		}
+		
+		ps.executeBatch();
+		ps.close();
 	}
 	
 	/**

@@ -50,12 +50,16 @@ public class Controller implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			if(e.getActionCommand().equals("create_new_route")) {
-				view.createRoute();
-			} else if(e.getActionCommand().equals("create_new_country")) {
-				view.createCountry();
-			} else if(e.getActionCommand().equals("create_new_airport")) {
+			if(e.getActionCommand().equals("create_airport")) {
 				view.createAirport();
+			} else if(e.getActionCommand().equals("create_filter")) {
+				// view.createFilter();
+			} else if(e.getActionCommand().equals("create_route")) {
+				view.createRoute();
+			} else if(e.getActionCommand().equals("delete_airport")) {
+				view.deleteAirport();
+			} else if(e.getActionCommand().equals("delete_filter")) {
+				// view.deleteFilter();
 			}
 		} catch (SQLException exception) {
 			JOptionPane.showMessageDialog(null, "During your last action an error occured.\n" +

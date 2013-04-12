@@ -134,6 +134,11 @@ public class Model {
 		return enterprise.createRoute(origin, destination);
 	}
 	
+	/**
+	 * This method loads an airport from the database, and adds it to the list
+	 * of available airports.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
 	public void loadAirports() throws SQLException {
 		String query = "SELECT `name` FROM `airports`";
 		
@@ -145,6 +150,27 @@ public class Model {
 		}
 		
 		Collections.sort(airports);
+	}
+	
+	/**
+	 * This method removes an airport by first triggering the removal of
+	 * all connected routes and then deleting the airport itself from the
+	 * database.
+	 * @param airportName The name of the airport to be removed.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteAirport(String airportName) throws SQLException {
+		Airport airport = getAirport(airportName);
+
+		enterprise.deleteRoutes(airport);
+		
+		String query = "DELETE FROM `airports` WHERE `id` = ?";
+		ArrayList<Object> params = new ArrayList<Object>(2);
+		params.add(airport.getId());
+		
+		database.executeUpdate(query, params);
+		
+		airports.remove(airport);
 	}
 	
 	/**
