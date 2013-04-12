@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with ASxcel.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jandavid.asxcel.view;
+package de.jandavid.asxcel.view.Routes;
 
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import de.jandavid.asxcel.view.View;
 
 /**
  * This is the footer at the end of the Routes view, which contains
@@ -29,7 +31,7 @@ import javax.swing.JPanel;
  * 
  * @author jdno
  */
-public class RoutesFooter extends JPanel {
+public class Footer extends JPanel {
 
 	/**
 	 * For future use.
@@ -46,7 +48,7 @@ public class RoutesFooter extends JPanel {
 	 * options for filtering, one with options to create objects.
 	 * @param view The view with access to the model.
 	 */
-	public RoutesFooter(View view) {
+	public Footer(View view) {
 		this.view = view;
 		
 		this.setLayout(new GridLayout(2,1));

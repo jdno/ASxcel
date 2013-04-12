@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ASxcel.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jandavid.asxcel.view;
+package de.jandavid.asxcel.view.Routes;
 
 import java.sql.SQLException;
 
@@ -31,7 +31,7 @@ import de.jandavid.asxcel.model.Route;
  * 
  * @author jdno
  */
-public class RoutesTableModel extends AbstractTableModel {
+public class TableModel extends AbstractTableModel {
 
 	/**
 	 * For future use.
@@ -42,10 +42,10 @@ public class RoutesTableModel extends AbstractTableModel {
 	 * This array contains the column names.
 	 */
 	private String[] columnNames = {"Origin", "IATA", "PAX", "Cargo",
-			"Destination", "IATA", "PAX", "Cargo", "Distance", "Loads to", "Loads from", ""};
+			"Destination", "IATA", "PAX", "Cargo", "Transfer", "Distance", "Loads to", "Loads from", "Scheduled"};
 	
 	private Class<?>[] columnClasses = {String.class, String.class, Integer.class, Integer.class,
-			String.class, String.class, Integer.class, Integer.class, Integer.class, Integer.class, 
+			String.class, String.class, Integer.class, Integer.class, Boolean.class, Integer.class, Integer.class, 
 			Integer.class, Boolean.class};
 	
 	/**
@@ -58,7 +58,7 @@ public class RoutesTableModel extends AbstractTableModel {
 	 * it fetches the data to display and writes changes back to it.
 	 * @param model
 	 */
-	public RoutesTableModel(Model model) {
+	public TableModel(Model model) {
 		this.model = model;
 	}
 
@@ -115,13 +115,15 @@ public class RoutesTableModel extends AbstractTableModel {
 			return r.getDestination().getPassengers();
 		case 7: // destination cargo
 			return r.getDestination().getCargo();
-		case 8: // distance
+		case 8: // transfer possible
+			return r.getDestination().isTransferPossible();
+		case 9: // distance
 			return r.getDistance();
-		case 9: // load to
+		case 10: // load to
 			return r.getLoadTo();
-		case 10: // load from
+		case 11: // load from
 			return r.getLoadFrom();
-		case 11: // scheduled
+		case 12: // scheduled
 			return r.isScheduled();
 		default:
 			return "";
@@ -171,16 +173,19 @@ public class RoutesTableModel extends AbstractTableModel {
 			case 7: // destination cargo
 				r.getDestination().setCargo((Integer) aValue);
 				break;
-			case 8: // distance
+			case 8: // transfer possible
+				r.getDestination().setTransferPossible(!r.getDestination().isTransferPossible());
+				break;
+			case 9: // distance
 				r.setDistance((Integer) aValue);
 				break;
-			case 9: // load to
+			case 10: // load to
 				r.setLoadTo((Integer) aValue);
 				break;
-			case 10: // load from
+			case 11: // load from
 				r.setLoadFrom((Integer) aValue);
 				break;
-			case 11: // scheduled
+			case 12: // scheduled
 				r.setScheduled(!r.isScheduled());
 				break;
 			default:

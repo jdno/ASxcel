@@ -24,6 +24,9 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import de.jandavid.asxcel.view.Routes.Footer;
+import de.jandavid.asxcel.view.Routes.Table;
+
 /**
  * This is the window the application gets "displayed in".
  * 
@@ -64,10 +67,10 @@ public class Window extends JFrame {
 	 */
 	public void showRoutes() {
 		getContentPane().removeAll();
-		JScrollPane pane = new JScrollPane(new RoutesTable(view));
+		JScrollPane pane = new JScrollPane(new Table(view));
 		pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		getContentPane().add(pane, BorderLayout.CENTER);
-		getContentPane().add(new RoutesFooter(view), BorderLayout.SOUTH);
+		getContentPane().add(new Footer(view), BorderLayout.SOUTH);
 		pack();
 		repaint();
 	}

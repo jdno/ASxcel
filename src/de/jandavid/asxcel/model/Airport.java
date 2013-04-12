@@ -77,6 +77,12 @@ public class Airport implements Comparable<Airport> {
 	private String size = "";
 	
 	/**
+	 * At some airports transfer is not possible, which means no passenger
+	 * can change flights at this location.
+	 */
+	private boolean transferPossible = true;
+	
+	/**
 	 * An airport gets initialized with its name, all the other parameters
 	 * can be set later or they can be retrieved from the database if the
 	 * airport has been created already.
@@ -123,7 +129,7 @@ public class Airport implements Comparable<Airport> {
 	 */
 	private void syncWithDb() throws SQLException {
 		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
-				"`a`.`cargo`, `a`.`size`, `c`.`name` FROM `airports` AS `a` " +
+				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
 				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id` " +
 				"WHERE `a`.`name` = ? LIMIT 1";
 		ArrayList<Object> params = new ArrayList<Object>(1);
@@ -138,7 +144,8 @@ public class Airport implements Comparable<Airport> {
 			passengers = dr.getInt(3);
 			cargo = dr.getInt(4);
 			size = dr.getString(5);
-			country = new Country(model, dr.getString(6));
+			transferPossible = dr.getInt(6) == 1 ? true : false;
+			country = new Country(model, dr.getString(7));
 		} else {
 			query = "INSERT INTO `airports` (`name`) VALUES (?)";
 			model.getDatabase().executeUpdate(query, params);
@@ -261,6 +268,22 @@ public class Airport implements Comparable<Airport> {
 	public void setSize(String size) throws SQLException {
 		updateField("size", size);
 		this.size = size;
+	}
+
+	/**
+	 * @return the transferPossible
+	 */
+	public boolean isTransferPossible() {
+		return transferPossible;
+	}
+
+	/**
+	 * @param transferPossible the transferPossible to set
+	 * @throws SQLException  If an SQL error occurs this gets thrown.
+	 */
+	public void setTransferPossible(boolean transferPossible) throws SQLException {
+		updateField("transfer", transferPossible ? 1 : 0);
+		this.transferPossible = transferPossible;
 	}
 
 }

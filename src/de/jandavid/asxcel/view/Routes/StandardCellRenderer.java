@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ASxcel.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jandavid.asxcel.view;
+package de.jandavid.asxcel.view.Routes;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -30,11 +30,12 @@ import de.jandavid.asxcel.model.Route;
 /**
  * This custom renderer is responsible for highlighting the routes depending
  * on they being scheduled or not. Scheduled routes are displayed green, and
- * the rest red.
+ * the rest red. It works for Strings and Integer, but for Booleans an own
+ * renderer exists.
  * 
  * @author jdno
  */
-public class RoutesCellRenderer extends JLabel implements TableCellRenderer {
+public class StandardCellRenderer extends JLabel implements TableCellRenderer {
 	
 	/**
 	 * For future use.
@@ -67,12 +68,11 @@ public class RoutesCellRenderer extends JLabel implements TableCellRenderer {
 	private Color redUnselected = new Color(255, 204, 204);
 
 	/**
-	 * The RoutesCellRenderer sets the background color of routes depending
+	 * The StandardCellRenderer sets the background color of routes depending
 	 * on whether they are scheduled or not.
-	 * @param table The table to work with.
 	 * @param model The model holding the data.
 	 */
-	public RoutesCellRenderer(JTable table, Model model) {
+	public StandardCellRenderer(Model model) {
 		this.model = model;
 		this.setOpaque(true);
 		this.setBorder(new EmptyBorder(2, 2, 2, 2));
@@ -91,7 +91,9 @@ public class RoutesCellRenderer extends JLabel implements TableCellRenderer {
 		this.setText(String.valueOf(value));
 		
 		if(value instanceof Integer) {
-			this.setHorizontalAlignment(JLabel.RIGHT);
+			this.setHorizontalAlignment(JLabel.CENTER);
+		} else {
+			this.setHorizontalAlignment(JLabel.LEFT);
 		}
 		
 		if(r.isScheduled()) {
