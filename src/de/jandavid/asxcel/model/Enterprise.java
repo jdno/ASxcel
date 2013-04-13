@@ -148,6 +148,8 @@ public class Enterprise {
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
 	public void loadRoutes() throws SQLException {
+		routes.clear();
+		
 		String query = "SELECT `a1`.`name` AS `origin`, `a2`.`name` AS `destination` FROM `routes` AS `r` " +
 				"INNER JOIN `airports` AS `a1` ON `r`.`origin` = `a1`.`id` " +
 				"INNER JOIN `airports` AS `a2` ON `r`.`destination` = `a2`.`id` " +
