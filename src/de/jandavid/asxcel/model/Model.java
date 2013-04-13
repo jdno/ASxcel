@@ -60,7 +60,7 @@ public class Model {
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
 	public Model() throws ClassNotFoundException, SQLException {
-		database = new Database();
+		database = new Database("asxcel.sqlite");
 		
 		loadAirports();
 		loadCountries();
