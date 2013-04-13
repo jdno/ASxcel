@@ -59,8 +59,8 @@ public class Model {
 	 * 		this gets thrown.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public Model() throws ClassNotFoundException, SQLException {
-		database = new Database();
+	public Model(String databaseName) throws ClassNotFoundException, SQLException {
+		database = new Database(databaseName);
 		
 		loadAirports();
 		loadCountries();
@@ -135,24 +135,6 @@ public class Model {
 	}
 	
 	/**
-	 * This method loads an airport from the database, and adds it to the list
-	 * of available airports.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
-	 */
-	public void loadAirports() throws SQLException {
-		String query = "SELECT `name` FROM `airports`";
-		
-		DatabaseResult dr = database.executeQuery(query);
-		
-		while(dr.next()) {
-			Airport a = new Airport(this, dr.getString(0));
-			airports.add(a);
-		}
-		
-		Collections.sort(airports);
-	}
-	
-	/**
 	 * This method removes an airport by first triggering the removal of
 	 * all connected routes and then deleting the airport itself from the
 	 * database.
@@ -172,6 +154,25 @@ public class Model {
 	}
 	
 	/**
+	 * This method loads an airport from the database, and adds it to the list
+	 * of available airports.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void loadAirports() throws SQLException {
+		airports.clear();
+		
+		String query = "SELECT `name` FROM `airports`";
+		
+		DatabaseResult dr = database.executeQuery(query);
+		
+		while(dr.next()) {
+			createAirport(dr.getString(0));
+		}
+		
+		Collections.sort(airports);
+	}
+	
+	/**
 	 * This methods loads all existing countries from the database.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
@@ -181,7 +182,7 @@ public class Model {
 		DatabaseResult dr = database.executeQuery(query);
 		
 		while(dr.next()) {
-			Country c = new Country(this, dr.getString(0));
+			Country c = createCountry(dr.getString(0));
 			countries.add(c);
 		}
 		

@@ -248,6 +248,11 @@ public class View {
 		
 		if(confirm == JOptionPane.NO_OPTION) return;
 		
+		if(model.getEnterprise().getMainHub().getName().equals(airportName)) {
+			JOptionPane.showMessageDialog(window, "You must not delete your main hub.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		if(!model.getEnterprise().doRoutesExistFor(new Airport(model, airportName))) {
 			JOptionPane.showMessageDialog(window, "This airport is still part of some routes. Delete\n" +
 					"the routes before deleting the airport.", "Error", JOptionPane.ERROR_MESSAGE);
