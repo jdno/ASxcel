@@ -162,8 +162,6 @@ public class Model {
 	public void deleteAirport(String airportName) throws SQLException {
 		Airport airport = getAirport(airportName);
 
-		enterprise.deleteRoutes(airport);
-		
 		String query = "DELETE FROM `airports` WHERE `id` = ?";
 		ArrayList<Object> params = new ArrayList<Object>(2);
 		params.add(airport.getId());

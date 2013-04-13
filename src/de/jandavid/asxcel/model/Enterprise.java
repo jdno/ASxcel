@@ -16,7 +16,6 @@
  */
 package de.jandavid.asxcel.model;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,25 +93,34 @@ public class Enterprise {
 	}
 	
 	/**
-	 * This method removes all routes for a given airport. This is used whenever
-	 * an airports gets deleted.
-	 * @param airport The airport to be deleted.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 * This method checks if routes exist for a given airport. This is
+	 * useful when deleting an airport.
+	 * @param airport The airport to check for routes.
+	 * @return True of routes exists to or from the given airport, false otherwise.
 	 */
-	public void deleteRoutes(Airport airport) throws SQLException {
-		String query = "DELETE FROM `routes` WHERE `id` =?";
-		
-		PreparedStatement ps = model.getDatabase().getConnection().prepareStatement(query);
-		
+	public boolean doRoutesExistFor(Airport airport) {
 		for(Route r: routes) {
 			if(r.getOrigin().equals(airport) || r.getDestination().equals(airport)) {
-				ps.setInt(1, r.getId());
-				ps.addBatch();
+				return true;
 			}
 		}
 		
-		ps.executeBatch();
-		ps.close();
+		return false;
+	}
+	
+	/**
+	 * Delete a specific route, based on its position in the list.
+	 * @param route The position of the route to delete.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteRoute(int route) throws SQLException {
+		Route r = routes.get(route);
+		
+		String query = "DELETE FROM `routes` WHERE `id` = '" + r.getId() + "'";
+		
+		model.getDatabase().executeUpdate(query, new ArrayList<Object>(0));
+		
+		routes.remove(route);
 	}
 	
 	/**

@@ -18,6 +18,9 @@ package de.jandavid.asxcel.view.Routes;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.sql.SQLException;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -34,7 +37,7 @@ import de.jandavid.asxcel.view.View;
  * 
  * @author jdno
  */
-public class Table extends JTable {
+public class Table extends JTable implements KeyListener {
 
 	/**
 	 * For future use.
@@ -47,8 +50,9 @@ public class Table extends JTable {
 	 * @param view The view with access to the model.
 	 */
 	public Table(View view) {
-		this.setModel(new TableModel(view.getModel()));
+		this.setModel(new RoutesModel(view.getModel()));
 		this.setAutoCreateRowSorter(true);
+		this.addKeyListener(this);
 		
 		StandardCellRenderer standardCellRenderer = new StandardCellRenderer(view.getModel());
 		this.setDefaultRenderer(String.class, standardCellRenderer);
@@ -65,7 +69,7 @@ public class Table extends JTable {
 		setGridColor(new Color(164,164,164));
 		setFocusable(true);
 	}
-
+	
 	/**
 	 * This auxiliary method sets the width of the columns to custom
 	 * values. This is done because many columns only hold one to
@@ -109,5 +113,37 @@ public class Table extends JTable {
 	        return renderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 	    }
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// Do nothing.
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// Do nothing.
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyReleased(KeyEvent e) {
+		try {
+			if(e.getKeyCode() == KeyEvent.VK_DELETE) {
+				RoutesModel tm = (RoutesModel) this.getModel();
+				tm.removeRow(convertRowIndexToModel(getSelectedRow()));
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();			
+		}
+	}
+
 }

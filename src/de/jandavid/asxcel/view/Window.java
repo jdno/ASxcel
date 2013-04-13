@@ -67,7 +67,8 @@ public class Window extends JFrame {
 	 */
 	public void showRoutes() {
 		getContentPane().removeAll();
-		JScrollPane pane = new JScrollPane(new Table(view));
+		Table routes = new Table(view);
+		JScrollPane pane = new JScrollPane(routes);
 		pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		getContentPane().add(pane, BorderLayout.CENTER);
 		getContentPane().add(new Footer(view), BorderLayout.SOUTH);

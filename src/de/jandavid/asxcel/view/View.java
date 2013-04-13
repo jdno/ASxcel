@@ -235,17 +235,24 @@ public class View {
 		airportName = (String)JOptionPane.showInputDialog(
 			window,
 			"Airport:",
-			"Delete route",
+			"Delete airport",
 			JOptionPane.PLAIN_MESSAGE,
 			null,
 			airports,
 			airports[0]);
 		if(airportName == null || airportName.equals("")) return;
 		
-		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to delete the following airport:\n\n" + airportName,
+		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to\n" +
+				"delete the following airport:\n\n" + airportName,
 				"Confirm", JOptionPane.YES_NO_OPTION);
 		
 		if(confirm == JOptionPane.NO_OPTION) return;
+		
+		if(!model.getEnterprise().doRoutesExistFor(new Airport(model, airportName))) {
+			JOptionPane.showMessageDialog(window, "This airport is still part of some routes. Delete\n" +
+					"the routes before deleting the airport.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		
 		model.deleteAirport(airportName);
 	}

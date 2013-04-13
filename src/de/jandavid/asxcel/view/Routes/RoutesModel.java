@@ -31,7 +31,7 @@ import de.jandavid.asxcel.model.Route;
  * 
  * @author jdno
  */
-public class TableModel extends AbstractTableModel {
+public class RoutesModel extends AbstractTableModel {
 
 	/**
 	 * For future use.
@@ -58,7 +58,7 @@ public class TableModel extends AbstractTableModel {
 	 * it fetches the data to display and writes changes back to it.
 	 * @param model
 	 */
-	public TableModel(Model model) {
+	public RoutesModel(Model model) {
 		this.model = model;
 	}
 
@@ -140,6 +140,18 @@ public class TableModel extends AbstractTableModel {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * This method removes a row by first removing it from the data model and
+	 * then from this table model.
+	 * @param row The row to delete.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void removeRow(int row) throws SQLException {
+		model.getEnterprise().deleteRoute(row);
+		
+		fireTableDataChanged();
 	}
 
 	/* (non-Javadoc)
