@@ -156,8 +156,8 @@ public class Enterprise {
 		DatabaseResult dr = model.getDatabase().executeQuery(query);
 		
 		while(dr.next()) {
-			Airport origin = new Airport(model, dr.getString(0));
-			Airport destination = new Airport(model, dr.getString(1));
+			Airport origin = model.getAirport(dr.getString(0));
+			Airport destination = model.getAirport(dr.getString(1));
 			
 			Route r = new Route(model, origin, destination);
 			
