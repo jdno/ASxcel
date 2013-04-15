@@ -1,5 +1,5 @@
-ASxcel
-======
+ASxcel - Release 1.0
+====================
 
 ASxcel is a small tool for the browser game AirlineSim (www.airlinesim.aero) by simulogics. It
 helps the player keep track of the routes he offers or plans to offer. Routes can be created
@@ -29,7 +29,7 @@ main hub. Although this is not critical I advise you to take this step seriously
 greatly reduce the work you have to do when creating routes.
 
 After your enterprise is created you need to add additional airports. This is because a route always
-needs two endpoints, and right now you only have one. Please also notice that you not only need just
+needs two end points, and right now you only have one. Please also notice that you not only need just
 two, but two between no route already exists.
 
 Once you have airports, you can create routes. Just choice the origin and destination, and voila. Now
@@ -41,7 +41,7 @@ Bugs
 ----
 
 I'm sure as hell that this application contains quite an amount of bugs. If you see one, trample it to
-death. Maybe it helps. If not, please open an issue on github where the project is hosted:
+death. Maybe it helps. If not, please open an issue on GitHub where the project is hosted:
 
 https://github.com/jdno/ASxcel
 
