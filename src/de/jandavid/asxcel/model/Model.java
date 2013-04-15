@@ -59,11 +59,11 @@ public class Model {
 	 * 		this gets thrown.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public Model() throws ClassNotFoundException, SQLException {
-		database = new Database();
-		
-		loadAirports();
+	public Model(String databaseName) throws ClassNotFoundException, SQLException {
+		database = new Database(databaseName);
+
 		loadCountries();
+		loadAirports();
 	}
 	
 	/**
@@ -134,14 +134,55 @@ public class Model {
 		return enterprise.createRoute(origin, destination);
 	}
 	
+	/**
+	 * This method removes an airport by first triggering the removal of
+	 * all connected routes and then deleting the airport itself from the
+	 * database.
+	 * @param airportName The name of the airport to be removed.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteAirport(String airportName) throws SQLException {
+		Airport airport = getAirport(airportName);
+
+		String query = "DELETE FROM `airports` WHERE `id` = ?";
+		ArrayList<Object> params = new ArrayList<Object>(2);
+		params.add(airport.getId());
+		
+		database.executeUpdate(query, params);
+		
+		airports.remove(airport);
+	}
+	
+	/**
+	 * This method loads an airport from the database, and adds it to the list
+	 * of available airports.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
 	public void loadAirports() throws SQLException {
-		String query = "SELECT `name` FROM `airports`";
+		airports.clear();
+		
+		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
+				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
+				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`";
 		
 		DatabaseResult dr = database.executeQuery(query);
 		
+		int id, pax, cargo;
+		String name, iata, size;
+		Country country;
+		boolean transferPossible;
+		
 		while(dr.next()) {
-			Airport a = new Airport(this, dr.getString(0));
-			airports.add(a);
+			id = dr.getInt(0);
+			name = dr.getString(1);
+			iata = dr.getString(2);
+			pax = dr.getInt(3);
+			cargo = dr.getInt(4);
+			size = dr.getString(5);
+			transferPossible = dr.getInt(6) == 1 ? true : false;
+			country = getCountry(dr.getString(7));
+			
+			airports.add(new Airport(this, id, name, country, iata, size, pax, cargo, transferPossible));
 		}
 		
 		Collections.sort(airports);
@@ -152,12 +193,15 @@ public class Model {
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
 	public void loadCountries() throws SQLException {
-		String query = "SELECT `name` FROM `countries`";
+		countries.clear();
+		
+		String query = "SELECT * FROM `countries`";
 		
 		DatabaseResult dr = database.executeQuery(query);
 		
+		Country c;
 		while(dr.next()) {
-			Country c = new Country(this, dr.getString(0));
+			c = new Country(this, dr.getInt(0), dr.getString(1));
 			countries.add(c);
 		}
 		

@@ -44,7 +44,7 @@ public class ASxcel {
 		} catch (Exception e) {}
 		
 		try {
-			Model model = new Model();
+			Model model = new Model("asxcel.sqlite");
 			View view = new View(model);
 			String enterprise = view.chooseEnterprise();
 			

@@ -67,6 +67,8 @@ public class Enterprise {
 		this.name = name;
 		
 		syncWithDb();
+		
+		loadRoutes();
 	}
 	
 	/**
@@ -90,6 +92,37 @@ public class Enterprise {
 		routes.add(r);
 		
 		return r;
+	}
+	
+	/**
+	 * This method checks if routes exist for a given airport. This is
+	 * useful when deleting an airport.
+	 * @param airport The airport to check for routes.
+	 * @return True of routes exists to or from the given airport, false otherwise.
+	 */
+	public boolean doRoutesExistFor(Airport airport) {
+		for(Route r: routes) {
+			if(r.getOrigin().equals(airport) || r.getDestination().equals(airport)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Delete a specific route, based on its position in the list.
+	 * @param route The position of the route to delete.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteRoute(int route) throws SQLException {
+		Route r = routes.get(route);
+		
+		String query = "DELETE FROM `routes` WHERE `id` = '" + r.getId() + "'";
+		
+		model.getDatabase().executeUpdate(query, new ArrayList<Object>(0));
+		
+		routes.remove(route);
 	}
 	
 	/**
@@ -117,6 +150,8 @@ public class Enterprise {
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
 	public void loadRoutes() throws SQLException {
+		routes.clear();
+		
 		String query = "SELECT `a1`.`name` AS `origin`, `a2`.`name` AS `destination` FROM `routes` AS `r` " +
 				"INNER JOIN `airports` AS `a1` ON `r`.`origin` = `a1`.`id` " +
 				"INNER JOIN `airports` AS `a2` ON `r`.`destination` = `a2`.`id` " +
@@ -125,8 +160,8 @@ public class Enterprise {
 		DatabaseResult dr = model.getDatabase().executeQuery(query);
 		
 		while(dr.next()) {
-			Airport origin = new Airport(model, dr.getString(0));
-			Airport destination = new Airport(model, dr.getString(1));
+			Airport origin = model.getAirport(dr.getString(0));
+			Airport destination = model.getAirport(dr.getString(1));
 			
 			Route r = new Route(model, origin, destination);
 			
@@ -156,8 +191,6 @@ public class Enterprise {
 			id = dr.getInt(0);
 			name = dr.getString(1);
 			mainHub = new Airport(model, dr.getString(2));
-			
-			loadRoutes();
 		} else {
 			throw new Exception("Enterprise was not found");
 		}

@@ -77,6 +77,12 @@ public class Airport implements Comparable<Airport> {
 	private String size = "";
 	
 	/**
+	 * At some airports transfer is not possible, which means no passenger
+	 * can change flights at this location.
+	 */
+	private boolean transferPossible = true;
+	
+	/**
 	 * An airport gets initialized with its name, all the other parameters
 	 * can be set later or they can be retrieved from the database if the
 	 * airport has been created already.
@@ -88,6 +94,32 @@ public class Airport implements Comparable<Airport> {
 		this.name = name;
 		
 		syncWithDb();
+	}
+	
+	/**
+	 * This constructor initializes an airport with all its attributes. No
+	 * synchronization with the database happens! This is meant as a help
+	 * for the model to load a set of airports with one query from the
+	 * database and initialize them all at once without further queries.
+	 * @param model The model to use
+	 * @param id The ID of the airport (from the database)
+	 * @param name The name of the airport
+	 * @param country The country the airport is in
+	 * @param iata The IATA code of the airport
+	 * @param pax The airports passenger size
+	 * @param cargo The airports cargo size
+	 * @param transferPossible Is a transfer possible
+	 */
+	protected Airport(Model model, int id, String name, Country country, String iata, String size, int pax, int cargo, boolean transferPossible) {
+		this.model = model;
+		this.id = id;
+		this.name = name;
+		this.country = country;
+		this.iataCode = iata;
+		this.size = size;
+		this.passengers = pax;
+		this.cargo = cargo;
+		this.transferPossible = transferPossible;
 	}
 	
 	/* (non-Javadoc)
@@ -123,7 +155,7 @@ public class Airport implements Comparable<Airport> {
 	 */
 	private void syncWithDb() throws SQLException {
 		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
-				"`a`.`cargo`, `a`.`size`, `c`.`name` FROM `airports` AS `a` " +
+				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
 				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id` " +
 				"WHERE `a`.`name` = ? LIMIT 1";
 		ArrayList<Object> params = new ArrayList<Object>(1);
@@ -138,7 +170,8 @@ public class Airport implements Comparable<Airport> {
 			passengers = dr.getInt(3);
 			cargo = dr.getInt(4);
 			size = dr.getString(5);
-			country = new Country(model, dr.getString(6));
+			transferPossible = dr.getInt(6) == 1 ? true : false;
+			country = new Country(model, dr.getString(7));
 		} else {
 			query = "INSERT INTO `airports` (`name`) VALUES (?)";
 			model.getDatabase().executeUpdate(query, params);
@@ -261,6 +294,22 @@ public class Airport implements Comparable<Airport> {
 	public void setSize(String size) throws SQLException {
 		updateField("size", size);
 		this.size = size;
+	}
+
+	/**
+	 * @return the transferPossible
+	 */
+	public boolean isTransferPossible() {
+		return transferPossible;
+	}
+
+	/**
+	 * @param transferPossible the transferPossible to set
+	 * @throws SQLException  If an SQL error occurs this gets thrown.
+	 */
+	public void setTransferPossible(boolean transferPossible) throws SQLException {
+		updateField("transfer", transferPossible ? 1 : 0);
+		this.transferPossible = transferPossible;
 	}
 
 }

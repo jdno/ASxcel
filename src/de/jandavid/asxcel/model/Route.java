@@ -161,6 +161,14 @@ public class Route implements Comparable<Route> {
 	}
 
 	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+
+	/**
 	 * @return the loadFrom
 	 */
 	public int getLoadFrom() {

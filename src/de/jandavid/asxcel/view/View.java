@@ -77,26 +77,6 @@ public class View {
 	}
 	
 	/**
-	 * This method creates a new country by asking the user for the
-	 * countries name. If the user closes the dialog or does not
-	 * enter a name nothing will be created.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
-	 */
-	public void createCountry() throws SQLException {
-		String country = "";
-		
-		country = JOptionPane.showInputDialog(window, "Name of the country:", "Create new country", JOptionPane.PLAIN_MESSAGE);
-		
-		if(country == null || country.equals("")) {
-			// We assume the user does not want to create a new country.
-		} else {
-			model.createCountry(country);
-		}
-		
-		showRoutes();
-	}
-	
-	/**
 	 * This method creates an enterprise by asking the user for
 	 * the name and the country to start in, and passing it on
 	 * to the model where the actual creation is done.
@@ -118,6 +98,14 @@ public class View {
 		model.createEnterprise(name, airport);
 		
 		return name;
+	}
+	
+	/**
+	 * This method creates a filter for the table. It ask the user by
+	 * what parameter he wants to filter and changes the table accordingly.
+	 */
+	public void createFilter() {
+		// TODO implement filter mechanism for route table
 	}
 	
 	/**
@@ -228,6 +216,50 @@ public class View {
 		}
 		
 		return name;
+	}
+	
+	/**
+	 * This method initiates the deletion of an airport by asking
+	 * the user which airports he wants to have removed. 
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteAirport() throws SQLException {
+		String airportName = "";
+		
+		String[] airports = new String[model.getAirports().size()];
+		
+		for(int i = 0; i < airports.length; i++) {
+			airports[i] = model.getAirports().get(i).getName();
+		}
+		
+		airportName = (String)JOptionPane.showInputDialog(
+			window,
+			"Airport:",
+			"Delete airport",
+			JOptionPane.PLAIN_MESSAGE,
+			null,
+			airports,
+			airports[0]);
+		if(airportName == null || airportName.equals("")) return;
+		
+		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to\n" +
+				"delete the following airport:\n\n" + airportName,
+				"Confirm", JOptionPane.YES_NO_OPTION);
+		
+		if(confirm == JOptionPane.NO_OPTION) return;
+		
+		if(model.getEnterprise().getMainHub().getName().equals(airportName)) {
+			JOptionPane.showMessageDialog(window, "You must not delete your main hub.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		if(model.getEnterprise().doRoutesExistFor(new Airport(model, airportName))) {
+			JOptionPane.showMessageDialog(window, "This airport is still part of some routes. Delete\n" +
+					"the routes before deleting the airport.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		model.deleteAirport(airportName);
 	}
 	
 	/**

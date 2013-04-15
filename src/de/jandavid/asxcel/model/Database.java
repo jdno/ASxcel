@@ -44,9 +44,9 @@ public class Database {
 	 * @throws SQLException If the statement cannot be created this
 	 * 		exception gets thrown.
 	 */
-	public Database() throws ClassNotFoundException, SQLException {
+	public Database(String name) throws ClassNotFoundException, SQLException {
 		Class.forName("org.sqlite.JDBC");
-		connection = DriverManager.getConnection("jdbc:sqlite:asxcel.sqlite");
+		connection = DriverManager.getConnection("jdbc:sqlite:" + name);
 	}
 	
 	/**
