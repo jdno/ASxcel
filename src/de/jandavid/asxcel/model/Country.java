@@ -54,6 +54,21 @@ public class Country implements Comparable<Country> {
 		syncWithDb();
 	}
 	
+	/**
+	 * This constructor initializes a country with all its attributes. No
+	 * synchronization with the database happens! This is meant as a help
+	 * for the model to load a set of countries with one query from the
+	 * database and initialize them all at once without further queries.
+	 * @param model The model to use
+	 * @param id The ID of the country
+	 * @param name The name of the country
+	 */
+	protected Country(Model model, int id, String name) {
+		this.model = model;
+		this.id = id;
+		this.name = name;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */

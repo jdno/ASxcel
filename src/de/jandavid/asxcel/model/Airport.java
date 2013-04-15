@@ -96,6 +96,32 @@ public class Airport implements Comparable<Airport> {
 		syncWithDb();
 	}
 	
+	/**
+	 * This constructor initializes an airport with all its attributes. No
+	 * synchronization with the database happens! This is meant as a help
+	 * for the model to load a set of airports with one query from the
+	 * database and initialize them all at once without further queries.
+	 * @param model The model to use
+	 * @param id The ID of the airport (from the database)
+	 * @param name The name of the airport
+	 * @param country The country the airport is in
+	 * @param iata The IATA code of the airport
+	 * @param pax The airports passenger size
+	 * @param cargo The airports cargo size
+	 * @param transferPossible Is a transfer possible
+	 */
+	protected Airport(Model model, int id, String name, Country country, String iata, String size, int pax, int cargo, boolean transferPossible) {
+		this.model = model;
+		this.id = id;
+		this.name = name;
+		this.country = country;
+		this.iataCode = iata;
+		this.size = size;
+		this.passengers = pax;
+		this.cargo = cargo;
+		this.transferPossible = transferPossible;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */

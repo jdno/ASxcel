@@ -67,6 +67,8 @@ public class Enterprise {
 		this.name = name;
 		
 		syncWithDb();
+		
+		loadRoutes();
 	}
 	
 	/**
@@ -189,8 +191,6 @@ public class Enterprise {
 			id = dr.getInt(0);
 			name = dr.getString(1);
 			mainHub = new Airport(model, dr.getString(2));
-			
-			loadRoutes();
 		} else {
 			throw new Exception("Enterprise was not found");
 		}
