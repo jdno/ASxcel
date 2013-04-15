@@ -253,7 +253,7 @@ public class View {
 			return;
 		}
 		
-		if(!model.getEnterprise().doRoutesExistFor(new Airport(model, airportName))) {
+		if(model.getEnterprise().doRoutesExistFor(new Airport(model, airportName))) {
 			JOptionPane.showMessageDialog(window, "This airport is still part of some routes. Delete\n" +
 					"the routes before deleting the airport.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
