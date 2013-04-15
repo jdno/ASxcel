@@ -137,6 +137,7 @@ public class Table extends JTable implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		try {
 			if(e.getKeyCode() == KeyEvent.VK_DELETE) {
+				this.getCellEditor().cancelCellEditing();
 				RoutesModel tm = (RoutesModel) this.getModel();
 				tm.removeRow(convertRowIndexToModel(getSelectedRow()));
 			}
