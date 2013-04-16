@@ -89,7 +89,7 @@ public class Airport implements Comparable<Airport> {
 	 * @param name The name of the airport.
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
-	public Airport(Model model, String name) throws SQLException {
+	protected Airport(Model model, String name) throws SQLException {
 		this.model = model;
 		this.name = name;
 		

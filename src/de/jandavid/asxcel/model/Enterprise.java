@@ -62,7 +62,7 @@ public class Enterprise {
 	 * @param name The (unique) name of the enterprise.
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
-	public Enterprise(Model model, String name) throws SQLException, Exception {
+	protected Enterprise(Model model, String name) throws SQLException, Exception {
 		this.model = model;
 		this.name = name;
 		
@@ -190,7 +190,7 @@ public class Enterprise {
 		if(dr.next()) {
 			id = dr.getInt(0);
 			name = dr.getString(1);
-			mainHub = new Airport(model, dr.getString(2));
+			mainHub = model.getAirport(dr.getString(2));
 		} else {
 			throw new Exception("Enterprise was not found");
 		}
