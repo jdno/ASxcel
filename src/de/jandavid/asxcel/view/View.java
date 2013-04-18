@@ -16,9 +16,14 @@
  */
 package de.jandavid.asxcel.view;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import de.jandavid.asxcel.model.Airport;
@@ -282,6 +287,33 @@ public class View {
 		}
 		
 		return airports;
+	}
+	
+	/**
+	 * This methods opens an About window.
+	 */
+	public void showAbout() {
+		JFrame about = new JFrame();
+		about.setTitle("About ASxcel");
+		about.setResizable(false);
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension size = new Dimension(320,80);
+		int xPos = (screenSize.width - size.width) / 2;
+		int yPos = (screenSize.height - size.height) / 2;
+		
+		about.setSize(size);
+		about.setLocation(xPos, yPos);
+		about.getContentPane().setLayout(new GridLayout(0,1));
+		
+		JLabel title = new JLabel("<html><h2><b>ASxcel</html>");
+		title.setHorizontalAlignment(JLabel.CENTER);
+		about.add(title);
+		JLabel version = new JLabel("Release 1.0");
+		version.setHorizontalAlignment(JLabel.CENTER);
+		about.add(version);
+		
+		about.setVisible(true);
 	}
 	
 	/**

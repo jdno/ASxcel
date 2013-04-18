@@ -60,6 +60,25 @@ public class Controller implements ActionListener {
 				view.deleteAirport();
 			} else if(e.getActionCommand().equals("delete_filter")) {
 				// view.deleteFilter();
+			} else if(e.getActionCommand().equals("menu_about")) {
+				view.showAbout();
+			} else if(e.getActionCommand().equals("menu_help")) {
+				String url = "https://github.com/jdno/ASxcel/wiki";
+				
+				if(java.awt.Desktop.isDesktopSupported() ) {
+					java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+			 
+					if(desktop.isSupported(java.awt.Desktop.Action.BROWSE) ) {
+			        	try {
+			        		java.net.URI uri = new java.net.URI(url);
+							desktop.browse(uri);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			} else if(e.getActionCommand().equals("menu_quit")) {
+				System.exit(0);
 			}
 		} catch (SQLException exception) {
 			JOptionPane.showMessageDialog(null, "During your last action an error occured.\n" +
@@ -69,7 +88,6 @@ public class Controller implements ActionListener {
 					"asxcel.support@jandavid.de", "Database error", JOptionPane.ERROR_MESSAGE);
 			exception.printStackTrace();
 		}
-		
 	}
 
 }
