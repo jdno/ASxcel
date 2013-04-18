@@ -54,9 +54,11 @@ public class Window extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		
 		setTitle("ASxcel");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Window.class.getResource("icon_64x64.png")));
 		
 		MenuBar menu = new MenuBar(view.getController());
 		setJMenuBar(menu);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		initializeSize();
