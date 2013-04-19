@@ -160,6 +160,10 @@ public class RoutesModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Route r = model.getEnterprise().getRoutes().get(rowIndex);
+		
+		if(aValue == null) {
+			return;
+		}
 
 		try {
 			switch(columnIndex) {
