@@ -20,6 +20,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -64,7 +65,11 @@ public class MenuBar extends JMenuBar {
 	 */
 	private void generateMenuFile() {
 		JMenu menuCreate = new JMenu("New");
+		ImageIcon createIcon = new ImageIcon(this.getClass().getResource("button_green_add.png"));
+		menuCreate.setIcon(createIcon);
 		JMenu menuDelete = new JMenu("Delete");
+		ImageIcon deleteIcon = new ImageIcon(this.getClass().getResource("button_green_delete.png"));
+		menuDelete.setIcon(deleteIcon);
 		
 		JMenuItem createAirport = new JMenuItem("Airport");
 		createAirport.setActionCommand("create_airport");
@@ -88,6 +93,8 @@ public class MenuBar extends JMenuBar {
 		JMenuItem changeEnterprise = new JMenuItem("Change enterprise...");
 		changeEnterprise.setActionCommand("change_enterprise");
 		changeEnterprise.addActionListener(listener);
+		ImageIcon changeIcon = new ImageIcon(this.getClass().getResource("sync.png"));
+		changeEnterprise.setIcon(changeIcon);
 		
 		JMenuItem quit = new JMenuItem("Quit ASxcel");
 		quit.setActionCommand("menu_quit");
@@ -117,6 +124,8 @@ public class MenuBar extends JMenuBar {
 		JMenuItem help = new JMenuItem("Online Help");
 		help.setActionCommand("menu_help");
 		help.addActionListener(listener);
+		ImageIcon helpIcon = new ImageIcon(this.getClass().getResource("web_blue.png"));
+		help.setIcon(helpIcon);
 		
 		menuHelp.add(about);
 		menuHelp.addSeparator();
