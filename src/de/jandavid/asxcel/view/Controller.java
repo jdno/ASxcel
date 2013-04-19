@@ -22,6 +22,8 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import de.jandavid.asxcel.model.Model;
+
 /**
  * This class acts as the ActionListener and handles the
  * interaction with the user.
@@ -29,6 +31,11 @@ import javax.swing.JOptionPane;
  * @author jdno
  */
 public class Controller implements ActionListener {
+	
+	/**
+	 * The model provides the data.
+	 */
+	private Model model;
 	
 	/**
 	 * The view coordinates the GUI.
@@ -40,7 +47,8 @@ public class Controller implements ActionListener {
 	 * the user.
 	 * @param view The view coordinates the GUI.
 	 */
-	public Controller(View view) {
+	public Controller(Model model, View view) {
+		this.model = model;
 		this.view = view;
 	}
 
@@ -50,7 +58,9 @@ public class Controller implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			if(e.getActionCommand().equals("create_airport")) {
+			if(e.getActionCommand().equals("change_enterprise")) {
+				initializeEnterprise();
+			} else if(e.getActionCommand().equals("create_airport")) {
 				view.createAirport();
 			} else if(e.getActionCommand().equals("create_filter")) {
 				// view.createFilter();
@@ -87,7 +97,25 @@ public class Controller implements ActionListener {
 					"your last steps to:\n" +
 					"asxcel.support@jandavid.de", "Database error", JOptionPane.ERROR_MESSAGE);
 			exception.printStackTrace();
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 	}
 
+	/**
+	 * This method handles the initialization (or the reloading) of an
+	 * enterprise. It ask the user for the name, triggers the creation
+	 * if the user wants a new one, and loads it from the model.
+	 * @throws Exception Thrown if the given enterprise cannot be found.
+	 */
+	public void initializeEnterprise() throws Exception {
+		String enterprise = view.chooseEnterprise();
+		
+		if(enterprise.equals("New...")) {
+			enterprise = view.createEnterprise();
+		}
+		
+		model.loadEnterprise(enterprise);
+		view.showRoutes();
+	}
 }

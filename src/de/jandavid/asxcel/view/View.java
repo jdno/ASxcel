@@ -65,8 +65,6 @@ public class View {
 	 */
 	public View(Model model) {
 		this.model = model;
-		this.controller = new Controller(this);
-		this.window = new Window(this);
 	}
 	
 	/**
@@ -337,12 +335,26 @@ public class View {
 	public void showRoutes() {
 		window.showRoutes();
 	}
+	
+	/**
+	 * This method displays the window.
+	 */
+	public void showWindow() {
+		this.window = new Window(this);
+	}
 
 	/**
 	 * @return the controller
 	 */
 	public Controller getController() {
 		return controller;
+	}
+
+	/**
+	 * @param controller the controller to set
+	 */
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 
 	/**

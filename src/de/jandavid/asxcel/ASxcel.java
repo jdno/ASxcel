@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import javax.swing.UIManager;
 
 import de.jandavid.asxcel.model.Model;
+import de.jandavid.asxcel.view.Controller;
 import de.jandavid.asxcel.view.View;
 
 /**
@@ -46,14 +47,11 @@ public class ASxcel {
 		try {
 			Model model = new Model("asxcel.sqlite");
 			View view = new View(model);
-			String enterprise = view.chooseEnterprise();
+			Controller controller = new Controller(model, view);
+			view.setController(controller);
 			
-			if(enterprise.equals("New...")) {
-				enterprise = view.createEnterprise();
-			}
-			
-			model.loadEnterprise(enterprise);
-			view.showRoutes();
+			view.showWindow();
+			controller.initializeEnterprise();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

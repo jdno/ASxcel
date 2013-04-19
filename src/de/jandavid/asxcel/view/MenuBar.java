@@ -85,6 +85,10 @@ public class MenuBar extends JMenuBar {
 		deleteAirport.addActionListener(listener);
 		menuDelete.add(deleteAirport);
 		
+		JMenuItem changeEnterprise = new JMenuItem("Change enterprise...");
+		changeEnterprise.setActionCommand("change_enterprise");
+		changeEnterprise.addActionListener(listener);
+		
 		JMenuItem quit = new JMenuItem("Quit ASxcel");
 		quit.setActionCommand("menu_quit");
 		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
@@ -94,6 +98,8 @@ public class MenuBar extends JMenuBar {
 		menuFile.add(menuCreate);
 		menuFile.addSeparator();
 		menuFile.add(menuDelete);
+		menuFile.addSeparator();
+		menuFile.add(changeEnterprise);
 		menuFile.addSeparator();
 		menuFile.add(quit);
 		
