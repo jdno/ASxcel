@@ -61,9 +61,6 @@ public class Model {
 	 */
 	public Model(String databaseName) throws ClassNotFoundException, SQLException {
 		database = new Database(databaseName);
-
-		loadCountries();
-		loadAirports();
 	}
 	
 	/**
@@ -151,6 +148,15 @@ public class Model {
 		database.executeUpdate(query, params);
 		
 		airports.remove(airport);
+	}
+	
+	/**
+	 * This method loads all static data the Model needs to work.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void initializeModel() throws SQLException {
+		loadCountries();
+		loadAirports();
 	}
 	
 	/**
