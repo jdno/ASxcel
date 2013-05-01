@@ -57,6 +57,7 @@ public class EnterpriseTest {
 	@Before
 	public void initializeModel() throws Exception {
 		model = new Model("testDb.sqlite");
+		model.initializeModel();
 		model.loadEnterprise("TestEnterprise");
 		db = model.getDatabase();
 	}

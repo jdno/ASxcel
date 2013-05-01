@@ -19,7 +19,6 @@ package de.jandavid.asxcel.model;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -67,19 +66,23 @@ public class UpdateManager {
 	 * @return True if an update can be performed, false otherwise.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public boolean updateAvailable() throws SQLException {
-		String query = "SELECT `value` FROM `meta_data` WHERE `key` = 'version' LIMIT 1";
-		DatabaseResult dr = database.executeQuery(query);
+	public boolean updateAvailable() {
+		try {
+			String query = "SELECT `value` FROM `meta_data` WHERE `key` = 'version' LIMIT 1";
+			DatabaseResult dr = database.executeQuery(query);
 
-		if (dr.next()) {
-			detectedVersion = dr.getInt(0);
+			if (dr.next()) {
+				detectedVersion = dr.getInt(0);
 
-			if (detectedVersion < currentVersion) {
-				return true;
+				if (detectedVersion < currentVersion) {
+					return true;
+				} else {
+					return false;
+				}
 			} else {
-				return false;
+				return true;
 			}
-		} else {
+		} catch (SQLException e) {
 			return true;
 		}
 	}
@@ -109,18 +112,16 @@ public class UpdateManager {
 	private void updateTo2() throws IOException, SQLException {
 		backup(1);
 
-		String query = "CREATE TABLE `meta_data` (`id` INTEGER PRIMARY KEY ,"
-				+ "`key` VARCHAR NOT NULL UNIQUE , `value` VARCHAR NOT NULL )";
-
 		try {
 			database.getConnection().setAutoCommit(false);
 
-			PreparedStatement ps = database.getConnection().prepareStatement(query);
-			ps.addBatch("INSERT INTO `meta_data` (`key`, `value`) VALUES ('version', '2')");
-			ps.addBatch("CREATE TABLE `enterprise_has_airport` (`id` INTEGER PRIMARY KEY , "
+			database.executeUpdate("CREATE TABLE IF NOT EXISTS `meta_data` (`id` INTEGER PRIMARY KEY ,"
+					+ "`key` VARCHAR NOT NULL UNIQUE , `value` VARCHAR NOT NULL )");
+			database.executeUpdate("INSERT INTO `meta_data` (`key`, `value`) VALUES ('version', '2')");
+			database.executeUpdate("CREATE TABLE IF NOT EXISTS `enterprise_has_airport` (`id` INTEGER PRIMARY KEY , "
 					+ "`enterprise` INTEGER NOT NULL , `airport` INTEGER NOT NULL , "
 					+ "FOREIGN KEY (`enterprise`) REFERENCES `enterprises`(`id`) , "
-					+ "FOREIGN KEY (`airport`) REFERENCES `airports`(`id`)");
+					+ "FOREIGN KEY (`airport`) REFERENCES `airports`(`id`))");
 
 			DatabaseResult enterprises = database.executeQuery("SELECT `id` FROM `enterprises`");
 			DatabaseResult airports = database.executeQuery("SELECT `id` FROM `airports`");
@@ -130,17 +131,15 @@ public class UpdateManager {
 
 				while (airports.next()) {
 					int a = airports.getInt(0);
-					ps.addBatch("INSERT INTO `enterprise_has_airport` (`enterprise`,`airport`) VALUES ('"
+					database.executeUpdate("INSERT INTO `enterprise_has_airport` (`enterprise`,`airport`) VALUES ('"
 							+ e + "', '" + a + "')");
 				}
 
 				airports.beforeFirst();
 			}
-
-			ps.executeBatch();
 		} catch (SQLException e1) {
 			database.getConnection().rollback();
-			throw new SQLException();
+			throw new SQLException(e1);
 		} finally {
 			database.getConnection().commit();
 			database.getConnection().setAutoCommit(true);
