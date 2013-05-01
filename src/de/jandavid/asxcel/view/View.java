@@ -370,7 +370,7 @@ public class View {
 		JLabel title = new JLabel("<html><h2><b>ASxcel</html>");
 		title.setHorizontalAlignment(JLabel.CENTER);
 		center.add(title);
-		JLabel version = new JLabel("Release 1.0");
+		JLabel version = new JLabel("Release 1.1");
 		version.setHorizontalAlignment(JLabel.CENTER);
 		center.add(version);
 		JLabel imageIcon = new JLabel(new ImageIcon(icon));
