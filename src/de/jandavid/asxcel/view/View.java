@@ -271,6 +271,40 @@ public class View {
 	}
 	
 	/**
+	 * This method initiates the deletion of an enterprise by asking the user
+	 * for the enterprise's name and a confirmation.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteEnterprise() throws SQLException {
+		String enterprise = "";
+		String[] enterprises = getEnterprises();
+		
+		enterprise = (String)JOptionPane.showInputDialog(
+				window,
+				"Enterprise:",
+				"Delete enterprise",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				enterprises,
+				enterprises[0]);
+		if(enterprise == null || enterprise.equals("")) return;
+		
+		if(enterprise.equals(model.getEnterprise().getName())) {
+			JOptionPane.showMessageDialog(window, "You must not delete the currently active enterprise.", 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to\n" +
+				"delete the following airport:\n\n" + enterprise,
+				"Confirm", JOptionPane.YES_NO_OPTION);
+		
+		if(confirm == JOptionPane.NO_OPTION) return;
+		
+		model.deleteEnterprise(enterprise);
+	}
+	
+	/**
 	 * This auxiliary method filters the list of airports provided by the
 	 * model by removing all airports to which a route already exists.
 	 * @param originName The name of the airport to start from.
@@ -290,6 +324,26 @@ public class View {
 		}
 		
 		return airports;
+	}
+	
+	/**
+	 * This auxiliary method gets the names of all enterprises from the database.
+	 * @return An array with the names of the enterprises
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	private String[] getEnterprises() throws SQLException {
+		String query = "SELECT `name` FROM `enterprises`";
+		
+		DatabaseResult dr = model.getDatabase().executeQuery(query);
+		
+		String[] enterprises = new String[dr.getRowCount()];
+		
+		for(int i = 0; i < dr.getRowCount(); i++) {
+			dr.next();
+			enterprises[i] = dr.getString(0);
+		}
+		
+		return enterprises;
 	}
 	
 	/**

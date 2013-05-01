@@ -90,6 +90,11 @@ public class MenuBar extends JMenuBar {
 		deleteAirport.addActionListener(listener);
 		menuDelete.add(deleteAirport);
 		
+		JMenuItem deleteEnterprise = new JMenuItem("Enterprise");
+		deleteEnterprise.setActionCommand("delete_enterprise");
+		deleteEnterprise.addActionListener(listener);
+		menuDelete.add(deleteEnterprise);
+		
 		JMenuItem changeEnterprise = new JMenuItem("Change enterprise...");
 		changeEnterprise.setActionCommand("change_enterprise");
 		changeEnterprise.addActionListener(listener);

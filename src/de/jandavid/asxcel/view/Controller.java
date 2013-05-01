@@ -68,6 +68,8 @@ public class Controller implements ActionListener {
 				view.createRoute();
 			} else if(e.getActionCommand().equals("delete_airport")) {
 				view.deleteAirport();
+			} else if(e.getActionCommand().equals("delete_enterprise")) {
+				view.deleteEnterprise();
 			} else if(e.getActionCommand().equals("delete_filter")) {
 				// view.deleteFilter();
 			} else if(e.getActionCommand().equals("menu_about")) {
