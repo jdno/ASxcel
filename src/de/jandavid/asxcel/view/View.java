@@ -89,9 +89,9 @@ public class View {
 	 * the name and the country to start in, and passing it on
 	 * to the model where the actual creation is done.
 	 * @return The name of the enterprise.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 * @throws Exception If the enterprise cannot be created this gets thrown.
 	 */
-	public String createEnterprise() throws SQLException {
+	public String createEnterprise() throws Exception {
 		String name = "";
 		String airport = "";
 		

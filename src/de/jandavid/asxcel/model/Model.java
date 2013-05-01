@@ -107,17 +107,30 @@ public class Model {
 	 * loaded using the appropriate method of this class.
 	 * @param name The name of the new enterprise.
 	 * @param countryName The name of the enterprise's country.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 * @throws Exception If the enterprise cannot be created this gets thrown.
 	 */
-	public void createEnterprise(String name, String airportName) throws SQLException {
-		Airport airport = createAirport(airportName);
-		
-		String query = "INSERT INTO `enterprises` (`name`, `airport`) VALUES (?,?)";
-		ArrayList<Object> params = new ArrayList<Object>(2);
-		params.add(name);
-		params.add(airport.getId());
-		
+	public void createEnterprise(String name, String airportName) throws Exception {
+		String query = "INSERT OR IGNORE INTO `airports` (`name`) VALUES (?)";
+		ArrayList<Object> params = new ArrayList<Object>(1);
+		params.add(airportName);
 		database.executeUpdate(query, params);
+		
+		params.clear();
+		query = "INSERT INTO `enterprises` (`name`, `airport`) SELECT ? AS `enterprise`, `id` FROM " +
+				"`airports` WHERE `name` = ?";
+		params.add(name);
+		params.add(airportName);
+		database.executeUpdate(query, params);
+		
+		params.clear();
+		query = "INSERT INTO `enterprise_has_airport` (`enterprise`, `airport`) " +
+				"SELECT `e`.`id`, `a`.`id` FROM `enterprises` AS `e` " +
+				"INNER JOIN `airports` AS `a` ON `e`.`airport` = `a`.`id` " +
+				"WHERE `e`.`name` = ?";
+		params.add(name);
+		database.executeUpdate(query, params);
+		
+		loadEnterprise(name);
 	}
 	
 	/**
