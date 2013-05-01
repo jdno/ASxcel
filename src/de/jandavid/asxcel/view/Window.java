@@ -24,7 +24,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import de.jandavid.asxcel.view.Routes.Footer;
 import de.jandavid.asxcel.view.Routes.Table;
 
 /**
@@ -55,6 +54,11 @@ public class Window extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		
 		setTitle("ASxcel");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Window.class.getResource("icon_64x64.png")));
+		
+		MenuBar menu = new MenuBar(view.getController());
+		setJMenuBar(menu);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		initializeSize();
@@ -71,7 +75,6 @@ public class Window extends JFrame {
 		JScrollPane pane = new JScrollPane(routes);
 		pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		getContentPane().add(pane, BorderLayout.CENTER);
-		getContentPane().add(new Footer(view), BorderLayout.SOUTH);
 		pack();
 		repaint();
 	}

@@ -47,7 +47,7 @@ public class Country implements Comparable<Country> {
 	 * @param name The country's name
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
-	public Country(Model model, String name) throws SQLException {
+	protected Country(Model model, String name) throws SQLException {
 		this.model = model;
 		this.name = name;
 		

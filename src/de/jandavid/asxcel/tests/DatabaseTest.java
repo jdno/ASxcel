@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class DatabaseTest {
 	
 	@Before
 	public void initializeDatabase() throws ClassNotFoundException, SQLException {
-		db = new Database("testDb.sqlite");
+		db = new Database("resources" + File.separator + "testDb.sqlite");
 	}
 
 	/**
@@ -52,7 +53,7 @@ public class DatabaseTest {
 	 */
 	@Test
 	public void testInitialization() throws ClassNotFoundException, SQLException {
-		db = new Database("testDb.sqlite");
+		db = new Database("resources" + File.separator + "testDb.sqlite");
 	}
 
 	/**

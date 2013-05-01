@@ -16,17 +16,16 @@
  */
 package de.jandavid.asxcel.tests;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import de.jandavid.asxcel.model.Database;
-import de.jandavid.asxcel.model.DatabaseResult;
+import de.jandavid.asxcel.model.UpdateManager;
 
 /**
  * @author jdno
@@ -35,31 +34,14 @@ public class UpdateTest {
 	
 	private Database db;
 	
-	@Before
-	public void initializeDatabase() throws ClassNotFoundException, SQLException {
-		db = new Database("testDb.sqlite");
-	}
-	
 	@Test
-	public void testUpdate() throws SQLException {
-		String query = "SELECT `value` FROM `meta_data` WHERE `key` = 'version'";
-		DatabaseResult dr;
+	public void testUpdateTo2() throws SQLException, ClassNotFoundException, IOException {
+		db = new Database("resources" + File.separator + "testDb.1.sqlite");
 		
-		try {
-			dr = db.executeQuery(query);
-		} catch (SQLException e) {
-			query = "CREATE TABLE `meta_data` (`id` INTEGER PRIMARY KEY , `key` VARCHAR NOT NULL  UNIQUE , `value` VARCHAR NOT NULL )";
-			db.executeUpdate(query, new ArrayList<Object>(0));
-			
-			query = "INSERT INTO `meta_data` (`key`, `value`) VALUES ('version', '1.0')";
-			db.executeUpdate(query, new ArrayList<Object>(0));
-			
-			query = "SELECT `value` FROM `meta_data` WHERE `key` = 'version'";
-			dr = db.executeQuery(query);
-			
-			assertTrue(dr.next());
-			assertEquals("1.0", dr.getString(0));
-		}
+		UpdateManager um = new UpdateManager(db);
+		
+		assertTrue(um.updateAvailable());
+		um.installUpdates();
 	}
 
 }

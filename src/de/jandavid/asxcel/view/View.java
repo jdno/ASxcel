@@ -16,10 +16,20 @@
  */
 package de.jandavid.asxcel.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import de.jandavid.asxcel.model.Airport;
 import de.jandavid.asxcel.model.DatabaseResult;
@@ -55,8 +65,6 @@ public class View {
 	 */
 	public View(Model model) {
 		this.model = model;
-		this.controller = new Controller(this);
-		this.window = new Window(this);
 	}
 	
 	/**
@@ -81,9 +89,9 @@ public class View {
 	 * the name and the country to start in, and passing it on
 	 * to the model where the actual creation is done.
 	 * @return The name of the enterprise.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 * @throws Exception If the enterprise cannot be created this gets thrown.
 	 */
-	public String createEnterprise() throws SQLException {
+	public String createEnterprise() throws Exception {
 		String name = "";
 		String airport = "";
 		
@@ -253,13 +261,47 @@ public class View {
 			return;
 		}
 		
-		if(model.getEnterprise().doRoutesExistFor(new Airport(model, airportName))) {
+		if(model.getEnterprise().doRoutesExistFor(model.getAirport(airportName))) {
 			JOptionPane.showMessageDialog(window, "This airport is still part of some routes. Delete\n" +
 					"the routes before deleting the airport.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
 		model.deleteAirport(airportName);
+	}
+	
+	/**
+	 * This method initiates the deletion of an enterprise by asking the user
+	 * for the enterprise's name and a confirmation.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteEnterprise() throws SQLException {
+		String enterprise = "";
+		String[] enterprises = getEnterprises();
+		
+		enterprise = (String)JOptionPane.showInputDialog(
+				window,
+				"Enterprise:",
+				"Delete enterprise",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				enterprises,
+				enterprises[0]);
+		if(enterprise == null || enterprise.equals("")) return;
+		
+		if(enterprise.equals(model.getEnterprise().getName())) {
+			JOptionPane.showMessageDialog(window, "You must not delete the currently active enterprise.", 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to\n" +
+				"delete the following airport:\n\n" + enterprise,
+				"Confirm", JOptionPane.YES_NO_OPTION);
+		
+		if(confirm == JOptionPane.NO_OPTION) return;
+		
+		model.deleteEnterprise(enterprise);
 	}
 	
 	/**
@@ -285,10 +327,74 @@ public class View {
 	}
 	
 	/**
+	 * This auxiliary method gets the names of all enterprises from the database.
+	 * @return An array with the names of the enterprises
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	private String[] getEnterprises() throws SQLException {
+		String query = "SELECT `name` FROM `enterprises`";
+		
+		DatabaseResult dr = model.getDatabase().executeQuery(query);
+		
+		String[] enterprises = new String[dr.getRowCount()];
+		
+		for(int i = 0; i < dr.getRowCount(); i++) {
+			dr.next();
+			enterprises[i] = dr.getString(0);
+		}
+		
+		return enterprises;
+	}
+	
+	/**
+	 * This methods opens an About window.
+	 */
+	public void showAbout() {
+		JFrame about = new JFrame();
+		about.setTitle("About ASxcel");
+		Image icon = Toolkit.getDefaultToolkit().getImage(View.class.getResource("icon_64x64.png"));
+		about.setIconImage(icon);
+		about.setResizable(false);
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension size = new Dimension(300,80);
+		int xPos = (screenSize.width - size.width) / 2;
+		int yPos = (screenSize.height - size.height) / 2;
+		
+		about.setSize(size);
+		about.setLocation(xPos, yPos);
+		about.getContentPane().setLayout(new BorderLayout());
+		
+		JPanel center = new JPanel();
+		center.setLayout(new GridLayout(0,1));
+		JLabel title = new JLabel("<html><h2><b>ASxcel</html>");
+		title.setHorizontalAlignment(JLabel.CENTER);
+		center.add(title);
+		JLabel version = new JLabel("Release 1.1");
+		version.setHorizontalAlignment(JLabel.CENTER);
+		center.add(version);
+		JLabel imageIcon = new JLabel(new ImageIcon(icon));
+		imageIcon.setHorizontalAlignment(JLabel.CENTER);
+		imageIcon.setBorder(new EmptyBorder(5, 48, 5, 0));
+		
+		about.add(imageIcon, BorderLayout.WEST);
+		about.add(center, BorderLayout.CENTER);
+		
+		about.setVisible(true);
+	}
+	
+	/**
 	 * This methods opens the table with the routes.
 	 */
 	public void showRoutes() {
 		window.showRoutes();
+	}
+	
+	/**
+	 * This method displays the window.
+	 */
+	public void showWindow() {
+		this.window = new Window(this);
 	}
 
 	/**
@@ -296,6 +402,13 @@ public class View {
 	 */
 	public Controller getController() {
 		return controller;
+	}
+
+	/**
+	 * @param controller the controller to set
+	 */
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 
 	/**

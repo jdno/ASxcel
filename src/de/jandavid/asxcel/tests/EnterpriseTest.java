@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -56,7 +57,8 @@ public class EnterpriseTest {
 	 */
 	@Before
 	public void initializeModel() throws Exception {
-		model = new Model("testDb.sqlite");
+		model = new Model("resources" + File.separator + "testDb.sqlite");
+		model.initializeModel();
 		model.loadEnterprise("TestEnterprise");
 		db = model.getDatabase();
 	}

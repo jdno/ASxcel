@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -53,9 +54,11 @@ public class ModelTest {
 	 * This initiates the private attributes before every test. 
 	 */
 	@Before
-	public void initializeModel() throws ClassNotFoundException, SQLException {
-		model = new Model("testDb.sqlite");
+	public void initializeModel() throws Exception {
+		model = new Model("resources" + File.separator + "testDb.sqlite");
 		db = model.getDatabase();
+		model.initializeModel();
+		model.loadEnterprise("TestEnterprise");
 	}
 	
 	/**
@@ -63,7 +66,7 @@ public class ModelTest {
 	 */
 	@Test
 	public void testInitialization() throws ClassNotFoundException, SQLException {
-		model = new Model("testDb.sqlite");
+		model = new Model("resources" + File.separator + "testDb.sqlite");
 	}
 	
 	/**
@@ -104,7 +107,7 @@ public class ModelTest {
 	 */
 	@Test
 	public void testLoadAirports() throws SQLException {
-		model.loadAirports();
+		model.loadAirports(1);
 		
 		assertEquals(9, model.getAirports().size());
 		

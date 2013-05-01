@@ -16,11 +16,14 @@
  */
 package de.jandavid.asxcel;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.UIManager;
 
 import de.jandavid.asxcel.model.Model;
+import de.jandavid.asxcel.model.UpdateManager;
+import de.jandavid.asxcel.view.Controller;
 import de.jandavid.asxcel.view.View;
 
 /**
@@ -45,20 +48,33 @@ public class ASxcel {
 		
 		try {
 			Model model = new Model("asxcel.sqlite");
-			View view = new View(model);
-			String enterprise = view.chooseEnterprise();
+			UpdateManager um = new UpdateManager(model.getDatabase());
 			
-			if(enterprise.equals("New...")) {
-				enterprise = view.createEnterprise();
+			if(um.updateAvailable()) {
+				try {
+					um.installUpdates();
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(-1);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(-1);
+				}
 			}
 			
-			model.loadEnterprise(enterprise);
-			view.showRoutes();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
+			model.initializeModel();
+			View view = new View(model);
+			Controller controller = new Controller(model, view);
+			view.setController(controller);
 			
+			view.showWindow();
+			controller.initializeEnterprise();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 

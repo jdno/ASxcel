@@ -61,9 +61,6 @@ public class Model {
 	 */
 	public Model(String databaseName) throws ClassNotFoundException, SQLException {
 		database = new Database(databaseName);
-
-		loadCountries();
-		loadAirports();
 	}
 	
 	/**
@@ -110,17 +107,30 @@ public class Model {
 	 * loaded using the appropriate method of this class.
 	 * @param name The name of the new enterprise.
 	 * @param countryName The name of the enterprise's country.
-	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 * @throws Exception If the enterprise cannot be created this gets thrown.
 	 */
-	public void createEnterprise(String name, String airportName) throws SQLException {
-		Airport airport = createAirport(airportName);
-		
-		String query = "INSERT INTO `enterprises` (`name`, `airport`) VALUES (?,?)";
-		ArrayList<Object> params = new ArrayList<Object>(2);
-		params.add(name);
-		params.add(airport.getId());
-		
+	public void createEnterprise(String name, String airportName) throws Exception {
+		String query = "INSERT OR IGNORE INTO `airports` (`name`) VALUES (?)";
+		ArrayList<Object> params = new ArrayList<Object>(1);
+		params.add(airportName);
 		database.executeUpdate(query, params);
+		
+		params.clear();
+		query = "INSERT INTO `enterprises` (`name`, `airport`) SELECT ? AS `enterprise`, `id` FROM " +
+				"`airports` WHERE `name` = ?";
+		params.add(name);
+		params.add(airportName);
+		database.executeUpdate(query, params);
+		
+		params.clear();
+		query = "INSERT INTO `enterprise_has_airport` (`enterprise`, `airport`) " +
+				"SELECT `e`.`id`, `a`.`id` FROM `enterprises` AS `e` " +
+				"INNER JOIN `airports` AS `a` ON `e`.`airport` = `a`.`id` " +
+				"WHERE `e`.`name` = ?";
+		params.add(name);
+		database.executeUpdate(query, params);
+		
+		loadEnterprise(name);
 	}
 	
 	/**
@@ -154,16 +164,51 @@ public class Model {
 	}
 	
 	/**
+	 * This method deletes an enterprise. Please take care that the currently active
+	 * enterprise does not get deleted! An enterprise gets deleted by removing all
+	 * information it has added to the database, most importantly its routes.
+	 * @param enterpriseName The name of the enterprise to delete.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void deleteEnterprise(String enterpriseName) throws SQLException {
+		String query = "SELECT `id` FROM `enterprises` WHERE `name` = '" + enterpriseName + "'";
+		DatabaseResult dr = database.executeQuery(query);
+		
+		if(dr.next()) {
+			int enterprise = dr.getInt(0);
+			
+			query = "DELETE FROM `enterprise_has_airport` WHERE `enterprise` = '" + enterprise + "'";
+			database.executeUpdate(query);
+			
+			query = "DELETE FROM `routes` WHERE `enterprise` = '" + enterprise + "'";
+			database.executeUpdate(query);
+			
+			query = "DELETE FROM `enterprises` WHERE `id` = '" + enterprise + "'";
+			database.executeUpdate(query);
+		}
+	}
+	
+	/**
+	 * This method loads all static data the Model needs to work.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void initializeModel() throws SQLException {
+		loadCountries();
+	}
+	
+	/**
 	 * This method loads an airport from the database, and adds it to the list
 	 * of available airports.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public void loadAirports() throws SQLException {
+	public void loadAirports(int enterprise) throws SQLException {
 		airports.clear();
 		
 		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
 				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
-				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`";
+				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`" +
+				"INNER JOIN `enterprise_has_airport` AS `e` ON `a`.`id` = `e`.`airport`" +
+				"WHERE `e`.`enterprise` = '" + enterprise + "'";
 		
 		DatabaseResult dr = database.executeQuery(query);
 		
