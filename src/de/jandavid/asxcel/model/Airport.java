@@ -157,9 +157,11 @@ public class Airport implements Comparable<Airport> {
 		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
 				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
 				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id` " +
-				"WHERE `a`.`name` = ? LIMIT 1";
+				"INNER JOIN `enterprise_has_airport` AS `eha` ON `a`.`id` = `eha`.`airport` " +
+				"WHERE `a`.`name` = ? AND `eha`.`enterprise` = ? LIMIT 1";
 		ArrayList<Object> params = new ArrayList<Object>(1);
 		params.add(name);
+		params.add(model.getEnterprise().getId());
 		
 		DatabaseResult dr = model.getDatabase().executeQuery(query, params);
 		
@@ -173,6 +175,7 @@ public class Airport implements Comparable<Airport> {
 			transferPossible = dr.getInt(6) == 1 ? true : false;
 			country = new Country(model, dr.getString(7));
 		} else {
+			params.remove(1);
 			query = "INSERT OR IGNORE INTO `airports` (`name`) VALUES (?)";
 			model.getDatabase().executeUpdate(query, params);
 			query = "INSERT OR IGNORE INTO `enterprise_has_airport` (`enterprise` , `airport`) " +
@@ -181,6 +184,7 @@ public class Airport implements Comparable<Airport> {
 			model.getDatabase().executeUpdate(query, params);
 			syncWithDb();
 		}
+		
 	}
 	
 	/**
