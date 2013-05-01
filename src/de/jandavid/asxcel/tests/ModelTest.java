@@ -54,9 +54,11 @@ public class ModelTest {
 	 * This initiates the private attributes before every test. 
 	 */
 	@Before
-	public void initializeModel() throws ClassNotFoundException, SQLException {
+	public void initializeModel() throws Exception {
 		model = new Model("resources" + File.separator + "testDb.sqlite");
 		db = model.getDatabase();
+		model.initializeModel();
+		model.loadEnterprise("TestEnterprise");
 	}
 	
 	/**

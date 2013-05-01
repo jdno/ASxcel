@@ -177,7 +177,7 @@ public class Airport implements Comparable<Airport> {
 			model.getDatabase().executeUpdate(query, params);
 			query = "INSERT OR IGNORE INTO `enterprise_has_airport` (`enterprise` , `airport`) " +
 					"SELECT '" + model.getEnterprise().getId() + "' AS `enterprise`, " +
-							"`id` FROM `airports` WHERE `name` = '" + name + "'";
+							"`id` FROM `airports` WHERE `name` = ?";
 			model.getDatabase().executeUpdate(query, params);
 			syncWithDb();
 		}
