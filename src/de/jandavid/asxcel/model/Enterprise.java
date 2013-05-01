@@ -190,6 +190,9 @@ public class Enterprise {
 		if(dr.next()) {
 			id = dr.getInt(0);
 			name = dr.getString(1);
+			
+			model.loadAirports(id);
+			
 			mainHub = model.getAirport(dr.getString(2));
 		} else {
 			throw new Exception("Enterprise was not found");

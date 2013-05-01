@@ -156,7 +156,6 @@ public class Model {
 	 */
 	public void initializeModel() throws SQLException {
 		loadCountries();
-		loadAirports();
 	}
 	
 	/**
@@ -164,12 +163,14 @@ public class Model {
 	 * of available airports.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public void loadAirports() throws SQLException {
+	public void loadAirports(int enterprise) throws SQLException {
 		airports.clear();
 		
 		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
 				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
-				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`";
+				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`" +
+				"INNER JOIN `enterprise_has_airport` AS `e` ON `a`.`id` = `e`.`airport`" +
+				"WHERE `e`.`enterprise` = '" + enterprise + "'";
 		
 		DatabaseResult dr = database.executeQuery(query);
 		

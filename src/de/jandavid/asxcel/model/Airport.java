@@ -173,7 +173,11 @@ public class Airport implements Comparable<Airport> {
 			transferPossible = dr.getInt(6) == 1 ? true : false;
 			country = new Country(model, dr.getString(7));
 		} else {
-			query = "INSERT INTO `airports` (`name`) VALUES (?)";
+			query = "INSERT OR IGNORE INTO `airports` (`name`) VALUES (?)";
+			model.getDatabase().executeUpdate(query, params);
+			query = "INSERT OR IGNORE INTO `enterprise_has_airport` (`enterprise` , `airport`) " +
+					"SELECT '" + model.getEnterprise().getId() + "' AS `enterprise`, " +
+							"`id` FROM `airports` WHERE `name` = '" + name + "'";
 			model.getDatabase().executeUpdate(query, params);
 			syncWithDb();
 		}

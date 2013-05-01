@@ -18,6 +18,7 @@ package de.jandavid.asxcel.tests;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -35,7 +36,7 @@ public class UpdateTest {
 	
 	@Test
 	public void testUpdateTo2() throws SQLException, ClassNotFoundException, IOException {
-		db = new Database("testDb.1.sqlite");
+		db = new Database("resources" + File.separator + "testDb.1.sqlite");
 		
 		UpdateManager um = new UpdateManager(db);
 		
