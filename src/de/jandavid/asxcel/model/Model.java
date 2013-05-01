@@ -61,9 +61,6 @@ public class Model {
 	 */
 	public Model(String databaseName) throws ClassNotFoundException, SQLException {
 		database = new Database(databaseName);
-
-		loadCountries();
-		loadAirports();
 	}
 	
 	/**
@@ -154,16 +151,26 @@ public class Model {
 	}
 	
 	/**
+	 * This method loads all static data the Model needs to work.
+	 * @throws SQLException If a SQL error occurs this gets thrown.
+	 */
+	public void initializeModel() throws SQLException {
+		loadCountries();
+	}
+	
+	/**
 	 * This method loads an airport from the database, and adds it to the list
 	 * of available airports.
 	 * @throws SQLException If a SQL error occurs this gets thrown.
 	 */
-	public void loadAirports() throws SQLException {
+	public void loadAirports(int enterprise) throws SQLException {
 		airports.clear();
 		
 		String query = "SELECT `a`.`id`, `a`.`name`, `a`.`iata`, `a`.`passengers`, " +
 				"`a`.`cargo`, `a`.`size`, `a`.`transfer`, `c`.`name` FROM `airports` AS `a` " +
-				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`";
+				"INNER JOIN `countries` AS `c` ON `a`.`country` = `c`.`id`" +
+				"INNER JOIN `enterprise_has_airport` AS `e` ON `a`.`id` = `e`.`airport`" +
+				"WHERE `e`.`enterprise` = '" + enterprise + "'";
 		
 		DatabaseResult dr = database.executeQuery(query);
 		

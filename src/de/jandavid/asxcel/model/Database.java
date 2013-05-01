@@ -37,6 +37,11 @@ public class Database {
 	private Connection connection;
 	
 	/**
+	 * The name of the database file
+	 */
+	private String fileName;
+	
+	/**
 	 * The database gets openend and a statement is created which can be
 	 * used to interact with it.
 	 * @throws ClassNotFoundException If the driver cannot be found this
@@ -46,6 +51,7 @@ public class Database {
 	 */
 	public Database(String name) throws ClassNotFoundException, SQLException {
 		Class.forName("org.sqlite.JDBC");
+		fileName = name;
 		connection = DriverManager.getConnection("jdbc:sqlite:" + name);
 	}
 	
@@ -89,6 +95,24 @@ public class Database {
 	}
 	
 	/**
+	 * This method executes a update query without parameters, and returns the result
+	 * of the PreparedStatement's executeUpdate method.
+	 * @param query The query to execute
+	 * @return either (1) the row count for SQL Data Manipulation Language (DML) statements or 
+	 * 		(2) 0 for SQL statements that return nothing
+	 * @throws SQLException If an SQL error occurs this gets thrown.
+	 */
+	public int executeUpdate(String query) throws SQLException {
+		PreparedStatement ps = this.connection.prepareStatement(query);
+		
+		int result = ps.executeUpdate();
+		
+		ps.close();
+		
+		return result;
+	}
+	
+	/**
 	 * This method creates a PreparedStatement, fills it with the given parameters, executes
 	 * it and returns the result of the executeUpdate method.
 	 * @param query The query to execute
@@ -125,6 +149,13 @@ public class Database {
 	 */
 	public Connection getConnection() {
 		return connection;
+	}
+
+	/**
+	 * @return the fileName
+	 */
+	public String getFileName() {
+		return fileName;
 	}
 
 }

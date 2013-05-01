@@ -16,11 +16,13 @@
  */
 package de.jandavid.asxcel;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.UIManager;
 
 import de.jandavid.asxcel.model.Model;
+import de.jandavid.asxcel.model.UpdateManager;
 import de.jandavid.asxcel.view.Controller;
 import de.jandavid.asxcel.view.View;
 
@@ -46,6 +48,21 @@ public class ASxcel {
 		
 		try {
 			Model model = new Model("asxcel.sqlite");
+			UpdateManager um = new UpdateManager(model.getDatabase());
+			
+			if(um.updateAvailable()) {
+				try {
+					um.installUpdates();
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(-1);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(-1);
+				}
+			}
+			
+			model.initializeModel();
 			View view = new View(model);
 			Controller controller = new Controller(model, view);
 			view.setController(controller);
@@ -53,10 +70,11 @@ public class ASxcel {
 			view.showWindow();
 			controller.initializeEnterprise();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(-1);
 		} catch (Exception e) {
-			
+			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 
