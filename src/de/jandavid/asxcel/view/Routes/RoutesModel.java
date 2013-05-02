@@ -44,6 +44,9 @@ public class RoutesModel extends AbstractTableModel {
 	private String[] columnNames = {"Origin", "IATA", "PAX", "Cargo",
 			"Destination", "IATA", "PAX", "Cargo", "Transfer", "Distance", "Loads to", "Loads from", "Scheduled"};
 	
+	/**
+	 * This array contains the classes of the columns.
+	 */
 	private Class<?>[] columnClasses = {String.class, String.class, Integer.class, Integer.class,
 			String.class, String.class, Integer.class, Integer.class, Boolean.class, Integer.class, Integer.class, 
 			Integer.class, Boolean.class};
@@ -208,7 +211,11 @@ public class RoutesModel extends AbstractTableModel {
 				break;
 			}
 			
-			fireTableDataChanged();
+			if(columnIndex >= 9) {
+				fireTableRowsUpdated(rowIndex, rowIndex);
+			} else {
+				fireTableDataChanged();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
