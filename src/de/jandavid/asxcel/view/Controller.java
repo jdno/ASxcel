@@ -20,8 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-import javax.swing.JOptionPane;
-
 import de.jandavid.asxcel.model.Model;
 
 /**
@@ -93,11 +91,6 @@ public class Controller implements ActionListener {
 				System.exit(0);
 			}
 		} catch (SQLException exception) {
-			JOptionPane.showMessageDialog(null, "During your last action an error occured.\n" +
-					"There seems to be a problem with the\n" +
-					"database. Please send a bug report with\n" +
-					"your last steps to:\n" +
-					"asxcel.support@jandavid.de", "Database error", JOptionPane.ERROR_MESSAGE);
 			exception.printStackTrace();
 		} catch (Exception e1) {
 			e1.printStackTrace();
