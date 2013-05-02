@@ -28,7 +28,10 @@ import de.jandavid.asxcel.model.Model;
 import de.jandavid.asxcel.model.Route;
 
 /**
- * 
+ * This custom renderer is responsible for highlighting the routes depending
+ * on they being scheduled or not. Scheduled routes are displayed green, and
+ * the rest red. It works for Booleans, but for Strings and Integer an own
+ * renderer exists.
  * 
  * @author jdno
  */
