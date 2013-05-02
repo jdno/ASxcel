@@ -19,8 +19,6 @@ package de.jandavid.asxcel.view;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import de.jandavid.asxcel.model.Airport;
 import de.jandavid.asxcel.model.DatabaseResult;
 import de.jandavid.asxcel.model.Model;
@@ -66,7 +64,7 @@ public class View {
 	public void createAirport() throws SQLException {
 		String name = "";
 		
-		name = JOptionPane.showInputDialog(window, "Name of the airport:", "Create new airport", JOptionPane.PLAIN_MESSAGE);
+		name = window.inputDialog("Name of the airport:", "Create new airport");
 		if(name == null || name.equals("")) {
 			// We assume the user does not want to create a new airport.
 		} else {
@@ -86,11 +84,11 @@ public class View {
 		String airport = "";
 		
 		while(name == null || name.equals("")) {
-			name = JOptionPane.showInputDialog(window, "Name your enterprise:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
+			name = window.inputDialog("Create new enterprise", "Name your enterprise:");
 		}
 		
 		while(airport == null || airport.equals("")) {
-			airport = JOptionPane.showInputDialog(window, "Name your main hub:", "Create new enterprise", JOptionPane.PLAIN_MESSAGE);
+			airport = window.inputDialog("Create new enterprise", "Name your main hub:");
 		}
 		
 		model.createEnterprise(name, airport);
@@ -117,11 +115,11 @@ public class View {
 		String destination = "";
 		
 		if(model.getAirports().size() < 2) {
-			JOptionPane.showMessageDialog(window, "You have to create two airports first.", "Info", JOptionPane.INFORMATION_MESSAGE);
+			window.informationDialog("You have to create two airports first.");
 			return;
 		}
 		
-		Object[] airportsOrigin = new Object[model.getAirports().size()];
+		String[] airportsOrigin = new String[model.getAirports().size()];
 		
 		int mainHubInt = 0;
 		Airport mainHub = model.getEnterprise().getMainHub();
@@ -131,44 +129,30 @@ public class View {
 			
 			if(mainHub.equals(currentAirport)) mainHubInt = i;
 			
-			airportsOrigin[i] = model.getAirports().get(i).getName();
+			airportsOrigin[i] = currentAirport.getName();
 		}
 		
-		origin = (String)JOptionPane.showInputDialog(
-			window,
-			"Origin:",
-			"Create new route",
-			JOptionPane.PLAIN_MESSAGE,
-			null,
-			airportsOrigin,
-			airportsOrigin[mainHubInt]);
+		origin = window.inputDialog("Create new route", "Origin:", airportsOrigin, mainHubInt);
 		if(origin == null || origin.equals("")) return;
 		
 		ArrayList<Airport> destinations = filterAirports(origin);
 		
 		if(destinations.size() < 1) {
-			JOptionPane.showMessageDialog(window, "You have to create a new airports first.", "Info", JOptionPane.INFORMATION_MESSAGE);
+			window.informationDialog("You have to create a new airports first.");
 			return;
 		}
 		
-		Object[] airportsDestination = new Object[destinations.size()];
+		String[] airportsDestination = new String[destinations.size()];
 		
 		for(int i = 0; i < destinations.size(); i++) {
 			airportsDestination[i] = destinations.get(i).getName();
 		}
 		
-		destination = (String)JOptionPane.showInputDialog(
-			window,
-			"Destination:",
-			"Create new route",
-			JOptionPane.PLAIN_MESSAGE,
-			null,
-			airportsDestination,
-			airportsDestination[0]);
+		destination = window.inputDialog("Create new route", "Destination:", airportsDestination, 0);
 		if(destination == null || destination.equals("")) return;
 		
 		if(origin.equals(destination)) {
-			JOptionPane.showMessageDialog(window, "Origin and destination must not be the same.", "Error", JOptionPane.ERROR_MESSAGE);
+			window.errorDialog("Origin and destination must not be the same.");
 			createRoute();
 		} else {
 			Airport start = model.getAirport(origin);
@@ -193,7 +177,7 @@ public class View {
 		
 		DatabaseResult dr = model.getDatabase().executeQuery(query);
 		
-		Object[] enterprises = new Object[dr.getRowCount() + 1];
+		String[] enterprises = new String[dr.getRowCount() + 1];
 		
 		for(int i = 0; i < dr.getRowCount(); i++) {
 			dr.next();
@@ -202,15 +186,7 @@ public class View {
 		enterprises[dr.getRowCount()] = "New...";
 		
 		while(name == null || name.equals("")) {
-			name = (String)JOptionPane.showInputDialog(
-					window,
-                    "Choose the enterprise you want\n" +
-                    "to manage:",
-                    "Select enterprise",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    enterprises,
-                    enterprises[0]);
+			name = window.inputDialog("Select enterprise", "Choose the enterprise you want\nto manage:", enterprises, 0);
 		}
 		
 		return name;
@@ -230,30 +206,19 @@ public class View {
 			airports[i] = model.getAirports().get(i).getName();
 		}
 		
-		airportName = (String)JOptionPane.showInputDialog(
-			window,
-			"Airport:",
-			"Delete airport",
-			JOptionPane.PLAIN_MESSAGE,
-			null,
-			airports,
-			airports[0]);
+		airportName = window.inputDialog("Delete airport", "Airport:", airports, 0);
 		if(airportName == null || airportName.equals("")) return;
 		
-		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to\n" +
-				"delete the following airport:\n\n" + airportName,
-				"Confirm", JOptionPane.YES_NO_OPTION);
-		
-		if(confirm == JOptionPane.NO_OPTION) return;
+		if(window.yesNoDialog("Please confirm that you want to\ndelete the following airport:\n\n" + airportName)) return;
 		
 		if(model.getEnterprise().getMainHub().getName().equals(airportName)) {
-			JOptionPane.showMessageDialog(window, "You must not delete your main hub.", "Error", JOptionPane.ERROR_MESSAGE);
+			window.errorDialog("You must not delete your main hub.");
 			return;
 		}
 		
 		if(model.getEnterprise().doRoutesExistFor(model.getAirport(airportName))) {
-			JOptionPane.showMessageDialog(window, "This airport is still part of some routes. Delete\n" +
-					"the routes before deleting the airport.", "Error", JOptionPane.ERROR_MESSAGE);
+			window.errorDialog("This airport is still part of some routes. Delete\n" +
+					"the routes before deleting the airport.");
 			return;
 		}
 		
@@ -269,29 +234,38 @@ public class View {
 		String enterprise = "";
 		String[] enterprises = getEnterprises();
 		
-		enterprise = (String)JOptionPane.showInputDialog(
-				window,
-				"Enterprise:",
-				"Delete enterprise",
-				JOptionPane.PLAIN_MESSAGE,
-				null,
-				enterprises,
-				enterprises[0]);
+		enterprise = window.inputDialog("Delete enterprise", "Enterprise:", enterprises, 0);
 		if(enterprise == null || enterprise.equals("")) return;
 		
 		if(enterprise.equals(model.getEnterprise().getName())) {
-			JOptionPane.showMessageDialog(window, "You must not delete the currently active enterprise.", 
-					"Error", JOptionPane.ERROR_MESSAGE);
+			window.errorDialog("You must not delete the currently active enterprise.");
 			return;
 		}
 		
-		int confirm = JOptionPane.showConfirmDialog(null, "Please confirm that you want to\n" +
-				"delete the following airport:\n\n" + enterprise,
-				"Confirm", JOptionPane.YES_NO_OPTION);
-		
-		if(confirm == JOptionPane.NO_OPTION) return;
+		if(window.yesNoDialog("Please confirm that you want to\ndelete the following airport:\n\n" + enterprise)) return;
 		
 		model.deleteEnterprise(enterprise);
+	}
+	
+	/**
+	 * This methods opens an About window.
+	 */
+	public void showAbout() {
+		new AboutWindow();
+	}
+	
+	/**
+	 * This methods opens the table with the routes.
+	 */
+	public void showRoutes() {
+		window.showRoutes();
+	}
+	
+	/**
+	 * This method displays the window.
+	 */
+	public void showWindow() {
+		this.window = new ContentWindow(this);
 	}
 	
 	/**
@@ -336,27 +310,6 @@ public class View {
 		return enterprises;
 	}
 	
-	/**
-	 * This methods opens an About window.
-	 */
-	public void showAbout() {
-		new AboutWindow();
-	}
-	
-	/**
-	 * This methods opens the table with the routes.
-	 */
-	public void showRoutes() {
-		window.showRoutes();
-	}
-	
-	/**
-	 * This method displays the window.
-	 */
-	public void showWindow() {
-		this.window = new ContentWindow(this);
-	}
-
 	/**
 	 * @return the controller
 	 */

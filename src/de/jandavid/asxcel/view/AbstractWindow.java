@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * AbstractWindow provides common attributes and methods all windows of this
@@ -67,6 +68,72 @@ public abstract class AbstractWindow extends JFrame {
 		Dimension size = this.getSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation((screenSize.width - size.width) / 2, (screenSize.height - size.height) / 2);
+	}
+	
+	/**
+	 * This displays a simple error dialog with the given message.
+	 * @param message The error message to display to the user
+	 */
+	public void errorDialog(String message) {
+		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * This displays a simple message dialog with the message type set
+	 * to information.
+	 * @param message The message to display
+	 */
+	public void informationDialog(String message) {
+		JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	/**
+	 * This presents an input dialog to the user where he can enter a text.
+	 * @param title The title of the dialog
+	 * @param message The message to the user
+	 * @return The input formated as a String
+	 */
+	public String inputDialog(String title, String message) {
+		return JOptionPane.showInputDialog(this, message, title, JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	/**
+	 * This presents an input dialog to the user where he can choose from a list
+	 * of predefined values. The list is handed to the dialog in form of an array
+	 * with the option to preselect a specific element by providing its position
+	 * in the array.
+	 * @param title The title of the dialog
+	 * @param message The message to the user
+	 * @param options The list of options from which the user can choose
+	 * @param selection The preselected element (set to 0 if you have no preferences)
+	 * @return The choice formated as a String
+	 */
+	public String inputDialog(String title, String message, String[] options, int selection) {
+		return (String) JOptionPane.showInputDialog(
+				this,
+				message,
+				title,
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				options,
+				options[selection]);
+	}
+
+	/**
+	 * This method displays a dialog the user has to confirm by choosing "Yes" or "No"
+	 * as possible options. If the user selects "Yes" true gets returned, if the user
+	 * declines by pressing "No" false will be the return value.
+	 * @param message The question the user should answer
+	 * @return True of the user confirms, false if he declines.
+	 */
+	public boolean yesNoDialog(String message) {
+		int confirm = JOptionPane.showConfirmDialog(this, message, "Confirm", JOptionPane.YES_NO_OPTION);
+		
+		if(confirm == JOptionPane.NO_OPTION) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }
