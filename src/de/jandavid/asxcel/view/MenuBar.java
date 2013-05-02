@@ -39,6 +39,9 @@ public class MenuBar extends JMenuBar {
 	 */
 	private static final long serialVersionUID = 2057840746061069452L;
 	
+	/**
+	 * The listener for the actions triggered by the JMenuItems
+	 */
 	private ActionListener listener;
 	
 	/**
