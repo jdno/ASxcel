@@ -16,20 +16,10 @@
  */
 package de.jandavid.asxcel.view;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import de.jandavid.asxcel.model.Airport;
 import de.jandavid.asxcel.model.DatabaseResult;
@@ -56,7 +46,7 @@ public class View {
 	/**
 	 * This is the application window.
 	 */
-	private Window window;
+	private ContentWindow window;
 	
 	/**
 	 * The view pulls the data to display from the model
@@ -350,37 +340,7 @@ public class View {
 	 * This methods opens an About window.
 	 */
 	public void showAbout() {
-		JFrame about = new JFrame();
-		about.setTitle("About ASxcel");
-		Image icon = Toolkit.getDefaultToolkit().getImage(View.class.getResource("icon_64x64.png"));
-		about.setIconImage(icon);
-		about.setResizable(false);
-		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension size = new Dimension(300,80);
-		int xPos = (screenSize.width - size.width) / 2;
-		int yPos = (screenSize.height - size.height) / 2;
-		
-		about.setSize(size);
-		about.setLocation(xPos, yPos);
-		about.getContentPane().setLayout(new BorderLayout());
-		
-		JPanel center = new JPanel();
-		center.setLayout(new GridLayout(0,1));
-		JLabel title = new JLabel("<html><h2><b>ASxcel</html>");
-		title.setHorizontalAlignment(JLabel.CENTER);
-		center.add(title);
-		JLabel version = new JLabel("Release 1.1");
-		version.setHorizontalAlignment(JLabel.CENTER);
-		center.add(version);
-		JLabel imageIcon = new JLabel(new ImageIcon(icon));
-		imageIcon.setHorizontalAlignment(JLabel.CENTER);
-		imageIcon.setBorder(new EmptyBorder(5, 48, 5, 0));
-		
-		about.add(imageIcon, BorderLayout.WEST);
-		about.add(center, BorderLayout.CENTER);
-		
-		about.setVisible(true);
+		new AboutWindow();
 	}
 	
 	/**
@@ -394,7 +354,7 @@ public class View {
 	 * This method displays the window.
 	 */
 	public void showWindow() {
-		this.window = new Window(this);
+		this.window = new ContentWindow(this);
 	}
 
 	/**
@@ -421,7 +381,7 @@ public class View {
 	/**
 	 * @return the window
 	 */
-	public Window getWindow() {
+	public ContentWindow getWindow() {
 		return window;
 	}
 

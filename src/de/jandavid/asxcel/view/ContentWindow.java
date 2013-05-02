@@ -31,7 +31,7 @@ import de.jandavid.asxcel.view.Routes.Table;
  * 
  * @author jdno
  */
-public class Window extends JFrame {
+public class ContentWindow extends AbstractWindow {
 	
 	/**
 	 * For future use.
@@ -39,29 +39,25 @@ public class Window extends JFrame {
 	private static final long serialVersionUID = -3116025408041446105L;
 	
 	/**
-	 * The view coordinates the GUI.
-	 */
-	private View view;
-	
-	/**
 	 * On initialization the Window sets its parameters and
 	 * gets displayed.
 	 * @param view The view that coordinates the GUI.
 	 */
-	public Window(View view) {
+	public ContentWindow(View view) {
+		super(new Dimension(1024, 600));
 		this.view = view;
 		
 		getContentPane().setLayout(new BorderLayout());
 		
 		setTitle("ASxcel");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Window.class.getResource("icon_64x64.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ContentWindow.class.getResource("icon_64x64.png")));
 		
 		MenuBar menu = new MenuBar(view.getController());
 		setJMenuBar(menu);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		initializeSize();
+		center();
 		
 		setVisible(true);
 	}
@@ -79,21 +75,4 @@ public class Window extends JFrame {
 		repaint();
 	}
 	
-	/**
-	 * This auxiliary method sets the size of the window and
-	 * centers it in the middle of the screen.
-	 */
-	private void initializeSize() {
-		int height = 600;
-		int width = 1024;
-		Dimension size = new Dimension(width, height);
-		
-		this.setMinimumSize(size);
-		this.setMaximumSize(size);
-		this.setResizable(false);
-		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation((screenSize.width - width) / 2, (screenSize.height - height) / 2);
-	}
-
 }
