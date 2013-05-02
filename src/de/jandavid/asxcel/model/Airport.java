@@ -1,5 +1,7 @@
 /**
- * This file is part of ASxcel.
+ * ASxcel - A small tool for the browser game AirlineSim
+ *
+ * Copyright 2013 jdno <https://github.com/jdno/>
  *
  * ASxcel is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

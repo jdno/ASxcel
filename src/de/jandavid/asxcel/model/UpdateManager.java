@@ -1,5 +1,7 @@
 /**
- * This file is part of ASxcel.
+ * ASxcel - A small tool for the browser game AirlineSim
+ *
+ * Copyright 2013 jdno <https://github.com/jdno/>
  *
  * ASxcel is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +24,14 @@ import java.nio.file.Files;
 import java.sql.SQLException;
 
 /**
+ * The UpdateManager handles updates to this application. Updates are
+ * done by checking the version value in the database and comparing it
+ * to the hard-coded version number of the application's code. This way
+ * an updated application can detect that the database is not up-to-date.
+ * If an update is available the UpdateManager applies all available
+ * patches one by one until the database is running the same version as
+ * the code.
+ * 
  * @author jdno
  */
 public class UpdateManager {
@@ -41,6 +51,12 @@ public class UpdateManager {
 	 */
 	private int detectedVersion = 1;
 
+	/**
+	 * The UpdateManager is responsible for updating the database
+	 * and other files in case a the application's and the database's
+	 * version differ. To achieve this he needs the database.
+	 * @param database The database to check for updates
+	 */
 	public UpdateManager(Database database) {
 		this.database = database;
 	}
