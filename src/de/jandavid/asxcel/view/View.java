@@ -211,7 +211,7 @@ public class View {
 		airportName = window.inputDialog("Delete airport", "Airport:", airports, 0);
 		if(airportName == null || airportName.equals("")) return;
 		
-		if(window.yesNoDialog("Please confirm that you want to\ndelete the following airport:\n\n" + airportName)) return;
+		if(!window.yesNoDialog("Please confirm that you want to\ndelete the following airport:\n\n" + airportName)) return;
 		
 		if(model.getEnterprise().getMainHub().getName().equals(airportName)) {
 			window.errorDialog("You must not delete your main hub.");
@@ -244,7 +244,7 @@ public class View {
 			return;
 		}
 		
-		if(window.yesNoDialog("Please confirm that you want to\ndelete the following airport:\n\n" + enterprise)) return;
+		if(!window.yesNoDialog("Please confirm that you want to\ndelete the following airport:\n\n" + enterprise)) return;
 		
 		model.deleteEnterprise(enterprise);
 	}
