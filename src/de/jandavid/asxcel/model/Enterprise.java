@@ -89,7 +89,7 @@ public class Enterprise {
 			}
 		}
 		
-		Route r = new Route(model, origin, destination);
+		Route r = new Route(this, origin, destination);
 		
 		routes.add(r);
 		
@@ -165,7 +165,7 @@ public class Enterprise {
 			Airport origin = model.getAirport(dr.getString(0));
 			Airport destination = model.getAirport(dr.getString(1));
 			
-			Route r = new Route(model, origin, destination);
+			Route r = new Route(this, origin, destination);
 			
 			routes.add(r);
 		}

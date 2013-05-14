@@ -62,7 +62,7 @@ public class Route implements Comparable<Route> {
 	/**
 	 * This is needed to access the database.
 	 */
-	private Model model;
+	private Enterprise enterprise;
 	
 	/**
 	 * This is the airport where the route starts.
@@ -83,8 +83,8 @@ public class Route implements Comparable<Route> {
 	 * @param origin The airport this route starts.
 	 * @throws SQLException If an SQL error occurs this gets thrown.
 	 */
-	public Route(Model model, Airport origin, Airport destination) throws SQLException {
-		this.model = model;
+	public Route(Enterprise enterprise, Airport origin, Airport destination) throws SQLException {
+		this.enterprise = enterprise;
 		this.destination = destination;
 		this.origin = origin;
 		
@@ -110,12 +110,13 @@ public class Route implements Comparable<Route> {
 	private void syncWithDb() throws SQLException {
 		String query = "SELECT `r`.`id`, `r`.`distance`, `r`.`loadFrom`, `r`.`loadTo`, " +
 				"`r`.`scheduled` FROM `routes` AS `r` WHERE `r`.`origin` = ? " +
-				"AND `r`.`destination` = ? LIMIT 1";
+				"AND `r`.`destination` = ? AND `r`.`enterprise` = ? LIMIT 1";
 		ArrayList<Object> params = new ArrayList<Object>(3);
 		params.add(origin.getId());
 		params.add(destination.getId());
+		params.add(enterprise.getId());
 		
-		DatabaseResult dr = model.getDatabase().executeQuery(query, params);
+		DatabaseResult dr = enterprise.getModel().getDatabase().executeQuery(query, params);
 		
 		if(dr.next()) {
 			id = dr.getInt(0);
@@ -125,8 +126,7 @@ public class Route implements Comparable<Route> {
 			scheduled = dr.getInt(4) == 1 ? true : false;
 		} else {
 			query = "INSERT INTO `routes` (`origin`, `destination`, `enterprise`) VALUES (?,?,?)";
-			params.add(model.getEnterprise().getId());
-			model.getDatabase().executeUpdate(query, params);
+			enterprise.getModel().getDatabase().executeUpdate(query, params);
 			syncWithDb();
 		}
 	}
@@ -143,7 +143,7 @@ public class Route implements Comparable<Route> {
 		ArrayList<Object> params = new ArrayList<Object>(1);
 		params.add(value);
 		
-		model.getDatabase().executeUpdate(query, params);
+		enterprise.getModel().getDatabase().executeUpdate(query, params);
 	}
 	
 	/**
@@ -226,10 +226,10 @@ public class Route implements Comparable<Route> {
 	}
 
 	/**
-	 * @return the model
+	 * @return the enterprise
 	 */
-	public Model getModel() {
-		return model;
+	public Enterprise getEnterprise() {
+		return enterprise;
 	}
 
 	/**
